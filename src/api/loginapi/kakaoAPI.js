@@ -9,6 +9,18 @@ const auth_code_path = `https://kauth.kakao.com/oauth/authorize`
 
 const access_token_url = `https://kauth.kakao.com/oauth/token`
 
+const host =`${import.meta.env.VITE_API_HOST}/login/kakao`
+
+export const getKakaoMemberWithAccessToken = async (accessToken) => {
+
+
+
+    const res = await axios.get(`${host}?accessToken=${accessToken}`)
+
+
+    return res.data;
+}
+
 export const getKakaoLoginLink = () => {
 
     const kakaoURL = `${auth_code_path}?response_type=code&client_id=${rest_api_key}&redirect_uri=${redirect_uri}`;
@@ -31,7 +43,7 @@ export const getKakaoAccessToken = async (authCode) => {
     }
 
     const res = await axios.post(access_token_url, params, header)
-    console.log(res)
+
 
     const accessToken = res.data.access_token
 
