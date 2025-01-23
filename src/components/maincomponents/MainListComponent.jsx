@@ -1,6 +1,13 @@
+import employerStore from "../../stores/employerStore.js";
+
 function MainListComponent() {
+
+    const ename = employerStore(state => state.ename);
+
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-6 space-y-6 mt-10">
+
+            <div>안녕하세요 {ename}</div>
 
             <div className="flex justify-end w-full">
                 <button className="w-40 h-10 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
