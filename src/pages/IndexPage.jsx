@@ -1,9 +1,9 @@
-import EmployerLoginComponent from "../components/employercomponents/EmployerLoginComponent.jsx";
+import LoginComponent from "../components/logincomponents/LoginComponent.jsx";
 
 
 function IndexPage() {
     return (
-        <EmployerLoginComponent/>
+        <LoginComponent/>
     );
 }
 
