@@ -44,6 +44,7 @@ export const getKakaoAccessToken = async (authCode) => {
 
     const res = await axios.post(access_token_url, params, header)
 
+    console.log(res.data)
 
     const accessToken = res.data.access_token
 
