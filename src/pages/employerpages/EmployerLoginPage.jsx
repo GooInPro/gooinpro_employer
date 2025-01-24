@@ -4,7 +4,6 @@ import EmployerLoginComponent from "../../components/employercomponents/Employer
 function EmployerLoginPage() {
     return (
         <>
-            <h1>Employer Login Page</h1>
         <EmployerLoginComponent/>
         </>
     )
