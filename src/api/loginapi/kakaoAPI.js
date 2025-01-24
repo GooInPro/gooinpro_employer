@@ -14,7 +14,6 @@ const host =`${import.meta.env.VITE_API_HOST}/login/kakao`
 export const getKakaoMemberWithAccessToken = async (accessToken) => {
 
 
-
     const res = await axios.get(`${host}?accessToken=${accessToken}`)
 
 
