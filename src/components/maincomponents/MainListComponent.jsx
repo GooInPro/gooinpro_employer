@@ -1,8 +1,15 @@
 import employerStore from "../../stores/employerStore.js";
+import {useNavigate} from "react-router-dom";
 
 function MainListComponent() {
 
     const ename = employerStore(state => state.ename);
+
+    const navigate = useNavigate();
+
+    const handleClickMyPage = () => {
+        navigate("/employer/read/:eno")
+    }
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-6 space-y-6 mt-10">
@@ -39,7 +46,8 @@ function MainListComponent() {
 
                 {/* Button 5: 마이페이지 */}
                 <div className="flex items-center justify-center">
-                    <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
+                    <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold"
+                    onClick={handleClickMyPage}>
                         마이페이지
                     </button>
                 </div>

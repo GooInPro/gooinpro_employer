@@ -1,11 +1,11 @@
-import EmployerDetailComponent from "../../components/employercomponents/EmployerDetailComponent.jsx";
+import EmployerReadComponent from "../../components/employercomponents/EmployerReadComponent.jsx";
 
 
 function EmployerLoginPage() {
     return (
         <>
         <h1>Employer Detail Page</h1>
-        <EmployerDetailComponent/>
+        <EmployerReadComponent/>
         </>
     )
 }
