@@ -50,7 +50,7 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
 
     const linkClick = (num) => {
         navigate({
-            pathname: `/${name}/detail/${num}`,
+            pathname: `/${name}/read/${num}`,
             search: location.search,
         });
     };
