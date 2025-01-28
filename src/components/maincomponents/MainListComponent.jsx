@@ -1,5 +1,6 @@
 import employerStore from "../../stores/employerStore.js";
 import {useNavigate} from "react-router-dom";
+import {useEffect} from "react";
 
 function MainListComponent() {
 
@@ -10,6 +11,10 @@ function MainListComponent() {
     const handleClickMyPage = () => {
         navigate("/employer/read/:eno")
     }
+
+    useEffect(() => {
+
+    },[ename])
 
     return (
         <div className="flex flex-col items-center justify-start min-h-screen p-6 space-y-6 mt-10">
