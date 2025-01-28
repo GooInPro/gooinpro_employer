@@ -3,6 +3,8 @@ import {lazy} from "react";
 const LoginIndexPage = lazy(() => import("../pages/loginpages/LoginIndexPage.jsx"))
 const LoginMainPage = lazy(() => import("../pages/loginpages/LoginMainPage.jsx"))
 const KakaoRedirectPage = lazy(() => import("../pages/loginpages/KakaoRedirectPage.jsx"))
+const GoogleRedirectPage = lazy(() => import("../pages/loginpages/GoogleRedirectPage.jsx"))
+
 
 
 const LoginRouter = {
@@ -14,6 +16,9 @@ const LoginRouter = {
         },
         {
             path: 'kakaore', element: <KakaoRedirectPage/>
+        },
+        {
+            path: 'googlere', element: <GoogleRedirectPage/>
         }
     ]
 }
