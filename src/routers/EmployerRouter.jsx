@@ -4,7 +4,7 @@ import {lazy} from "react";
 
 const EmployerIndexPage = lazy(() => import("../pages/employerpages/EmployerIndexPage.jsx"))
 const EmployerLoginPage = lazy(() => import("../pages/employerpages/EmployerLoginPage.jsx"))
-const EmployerDetailPage = lazy(() => import("../pages/employerpages/EmployerDetailPage.jsx"))
+const EmployerReadPage = lazy(() => import("../pages/employerpages/EmployerReadPage.jsx"))
 
 
 
@@ -19,7 +19,7 @@ const EmployerRouter = {
             path: 'login', element: <EmployerLoginPage/>
         },
         {
-            path: 'detail', element: <EmployerDetailPage/> // 참고만
+            path: 'read/:eno', element: <EmployerReadPage/>
         }
     ]
 }
