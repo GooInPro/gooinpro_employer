@@ -1,6 +1,6 @@
 import employerStore from "../../stores/employerStore.js";
 import { useEffect, useState } from "react";
-import { EmployerRead } from "../../api/employerapi/employerAPI.js";
+import {EmployerEdit, EmployerRead} from "../../api/employerapi/employerAPI.js";
 
 const EmployerDetailComponent = () => {
     const eno = employerStore(state => state.eno);
@@ -18,6 +18,17 @@ const EmployerDetailComponent = () => {
             [name]: value
         }));
     };
+
+    const handleUpdate = async () => {
+        const updateData = {
+            ename: formData.ename,
+            ebirth: formData.ebirth
+        }
+        await EmployerEdit(eno, updateData).then((res)=>{
+            console.log(res);
+        })
+    }
+
 
     useEffect(() => {
         EmployerRead(eno).then((data) => {
@@ -84,7 +95,8 @@ const EmployerDetailComponent = () => {
             </div>
 
             {/* 수정 버튼 */}
-            <button className="w-full mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button className="w-full mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onClick={handleUpdate}>
                 수정 완료
             </button>
         </div>
