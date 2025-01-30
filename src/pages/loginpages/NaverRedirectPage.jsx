@@ -1,6 +1,6 @@
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect} from "react";
-import {getNaverAccessToken, getNaverMemberWithAccessToken} from "../../api/loginapi/naverAPI.js";
+import {getNaverMemberWithAccessToken, sendAuthCode} from "../../api/loginapi/naverAPI.js";
 import employerStore from "../../stores/employerStore.js";
 
 function NaverRedirectPage() {
@@ -17,8 +17,9 @@ function NaverRedirectPage() {
     const setRefreshToken = employerStore(state => state.setRefreshToken);
 
     useEffect(() => {
-        getNaverAccessToken(authCode).then((accessToken) => {
-            getNaverMemberWithAccessToken(accessToken).then((member) => {
+        sendAuthCode(authCode).then(accessToken=>{
+            console.log(accessToken)
+            getNaverMemberWithAccessToken(accessToken.data).then((member) => {
                 setEno(member.data.eno);
                 setEemail(member.data.eemail);
                 setEname(member.data.ename);
@@ -30,9 +31,8 @@ function NaverRedirectPage() {
                 } else {
                     navigate("/employerRegister/select");
                 }
-
             })
-        })
+        });
     })
 
     return (
