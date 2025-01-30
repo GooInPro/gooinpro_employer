@@ -4,6 +4,8 @@ const LoginIndexPage = lazy(() => import("../pages/loginpages/LoginIndexPage.jsx
 const LoginMainPage = lazy(() => import("../pages/loginpages/LoginMainPage.jsx"))
 const KakaoRedirectPage = lazy(() => import("../pages/loginpages/KakaoRedirectPage.jsx"))
 const GoogleRedirectPage = lazy(() => import("../pages/loginpages/GoogleRedirectPage.jsx"))
+const NaverRedirectPage = lazy(() => import("../pages/loginpages/NaverRedirectPage.jsx"))
+
 
 
 
@@ -19,6 +21,9 @@ const LoginRouter = {
         },
         {
             path: 'googlere', element: <GoogleRedirectPage/>
+        },
+        {
+            path: 'naverre', element: <NaverRedirectPage/>
         }
     ]
 }
