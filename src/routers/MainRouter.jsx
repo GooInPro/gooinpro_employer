@@ -13,7 +13,7 @@ const MainRouter = createBrowserRouter([
         element: <IndexPage />
     },
     EmployerRouter,
-    ChatRouter
+    ChatRouter,
     LoginRouter,
     MainSelectRouter,
     EmployerRegisterRouter,
