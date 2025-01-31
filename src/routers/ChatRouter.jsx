@@ -7,6 +7,11 @@ const ChatRouter ={
     path: '/chat',
     element: <ChatIndexPage/>,
     children: [
+        {
+            path: 'admin',
+            element: <ChatPage/>,
+        }
+
     ]
 }
 export default ChatRouter;
