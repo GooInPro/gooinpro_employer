@@ -3,14 +3,21 @@ import axios from "axios";
 
 const host = `${import.meta.env.VITE_API_HOST}/chatroom`;
 
-export const getEmpChatRoom = async (admno) => {
+export const getAdminChatRoom = async (admno) => {
 
-    const res = await axios.get(`${host}/get/admin/${admno}`)
+    try {
+        const res = await axios.get(`${host}/get/admin/${admno}`);
 
-    console.log(res);
+        console.log(res);
 
-    return res.data;
-}
+        return res.data;
+
+    } catch (error) {
+        console.error('Error fetching chat room:', error);
+        throw error;
+    }
+};
+
 
 export const getPartChatRoom = async (pno) => {
 
