@@ -25,3 +25,15 @@ export const sendMessage = async (body) => {
         throw error;
     }
 }
+
+// 메시지 삭제
+export const deleteMessages = async (roomId) => {
+    try {
+        const res = await axios.delete(`${host}/chat/${roomId}`);
+        console.log(res);
+        return res.data;
+    } catch (error) {
+        console.error('메시지 삭제 실패:', error);
+        throw error;
+    }
+}
