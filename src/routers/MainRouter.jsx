@@ -4,6 +4,7 @@ import EmployerRouter from "./EmployerRouter.jsx";
 import LoginRouter from "./LoginPageRouter.jsx";
 import MainSelectRouter from "./MainSelectRouter.jsx";
 import EmployerRegisterRouter from "./EmployerRegisterRouter.jsx";
+import MapRouter from "./MapRouter.jsx";
 
 
 const MainRouter = createBrowserRouter([
@@ -15,8 +16,7 @@ const MainRouter = createBrowserRouter([
     LoginRouter,
     MainSelectRouter,
     EmployerRegisterRouter,
-
-
-])
+    MapRouter
+]);
 
 export default MainRouter;
