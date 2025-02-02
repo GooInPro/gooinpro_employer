@@ -9,7 +9,11 @@ function PartTimerReadComponent() {
 
     console.log(pno);
 
-    const [data, setData] = useState({});
+    const [data, setData] = useState({
+        partTimer: {},
+        workLogs: {}
+    });
+
 
     useEffect(() => {
 
@@ -27,45 +31,45 @@ function PartTimerReadComponent() {
                 <div className="space-y-4">
                     <div className="flex justify-between">
                         <span className="font-medium">이름</span>
-                        <span className="text-gray-700">{data.pname}</span>
+                        <span className="text-gray-700">{data.partTimer.pname}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">이메일</span>
-                        <span className="text-gray-700">{data.pemail}</span>
+                        <span className="text-gray-700">{data.partTimer.pemail}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">성별</span>
                         <span
-                            className="text-gray-700">{data.pgender ? '남자' : '여자'}</span>
+                            className="text-gray-700">{data.partTimer.pgender ? '남자' : '여자'}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">주소</span>
-                        <span className="text-gray-700">{data.proadAddress} {data.pdetailAddress}</span>
+                        <span className="text-gray-700">{data.partTimer.proadAddress} {data.partTimer.pdetailAddress}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">생년월일</span>
                         <span
-                            className="text-gray-700">{data.pbirth ? new Date(data.pbirth).toLocaleDateString() : '정보 없음'}</span>
+                            className="text-gray-700">{data.partTimer.pbirth ? new Date(data.partTimer.pbirth).toLocaleDateString() : '정보 없음'}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">근무일 수</span>
-                        <span className="text-gray-700">{data.workDaysCount}</span>
+                        <span className="text-gray-700">{data.workLogs.workDaysCount}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">정시 출근</span>
-                        <span className="text-gray-700">{data.onTimeCount}</span>
+                        <span className="text-gray-700">{data.workLogs.onTimeCount}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">지각 횟수</span>
-                        <span className="text-gray-700">{data.lateCount}</span>
+                        <span className="text-gray-700">{data.workLogs.lateCount}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">조기 퇴근</span>
-                        <span className="text-gray-700">{data.earlyLeaveCount}</span>
+                        <span className="text-gray-700">{data.workLogs.earlyLeaveCount}</span>
                     </div>
                     <div className="flex justify-between">
                         <span className="font-medium">결근 횟수</span>
-                        <span className="text-gray-700">{data.absenceCount}</span>
+                        <span className="text-gray-700">{data.workLogs.absenceCount}</span>
                     </div>
                 </div>
             </div>
