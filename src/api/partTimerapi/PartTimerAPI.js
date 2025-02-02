@@ -36,11 +36,13 @@ export const getPartTimerWorkStatus = async (pno) => {
 }
 
 //내 지원자 리스트
-export const getApplicantList = async (eno, page) => {
+export const getApplicantList = async (page) => {
 
     const pageValue = page || 1;
 
     const res = await axios.get(`${host}/applicant/list/${eno}?page=${pageValue}`);
+
+    console.log(res.data.data);
 
     return res.data.data;
 }

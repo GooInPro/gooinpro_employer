@@ -9,6 +9,14 @@ export const PartTimerTableHeader = [
 
 ]
 
+export const ApplicantTableColumn = [
+    "pno", "pifilename", "pname", "jpname", "jpahourlyRate"
+]
+
+export const ApplicantTableHeader = [
+    "사진", "이름", "공고 이름", "원하는 시급"
+]
+
 function PartTimerIndexPage() {
     return (
         <>
