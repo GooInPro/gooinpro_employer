@@ -1,7 +1,7 @@
+// src/routers/MapRouter.jsx
 import { lazy, Suspense } from "react";
 import { NavermapsProvider } from 'react-naver-maps';
-
-const MapIndexPage = lazy(() => import("../pages/mappages/MapIndexPage.jsx"));
+import MapIndexPage from "../pages/mappages/MapIndexPage.jsx";
 const MapSearchPage = lazy(() => import("../pages/mappages/MapSearchPage.jsx"));
 
 const MapRouter = {
@@ -23,6 +23,6 @@ const MapRouter = {
             )
         }
     ]
-}
+};
 
 export default MapRouter;
