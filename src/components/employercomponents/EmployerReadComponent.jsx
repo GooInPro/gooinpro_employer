@@ -1,9 +1,15 @@
 import employerStore from "../../stores/employerStore.js";
 import { useEffect, useState } from "react";
-import { EmployerRead } from "../../api/employerapi/employerAPI.js";
+import {EmployerEdit, EmployerRead} from "../../api/employerapi/employerAPI.js";
+import CommonModal from "../../common/CommonModal.jsx";
+import {useNavigate} from "react-router-dom";
 
 const EmployerDetailComponent = () => {
+    const { setEname } = employerStore();
     const eno = employerStore(state => state.eno);
+    const [editmodalOpen , setEditModalOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         ename: "",
@@ -19,6 +25,33 @@ const EmployerDetailComponent = () => {
         }));
     };
 
+    const handleEditClick = () => {
+
+        setEditModalOpen(true)
+    }
+
+    const EditFn = () => {
+        const updateData = {
+            ename: formData.ename,
+            ebirth: formData.ebirth
+        }
+        EmployerEdit(eno, updateData).then((res) => {
+            console.log(res);
+            setEname(formData.ename);
+            // 수정된 데이터 다시 불러오기 (화면 즉시 반영)
+            return EmployerRead(eno);
+        }).then((data) => {
+            setFormData({
+                ename: data.data.ename,
+                eemail: data.data.eemail,
+                ebirth: data.data.ebirth,
+            });
+            setEditModalOpen(false);
+            navigate('/main/list');
+        });
+    }
+
+
     useEffect(() => {
         EmployerRead(eno).then((data) => {
             setFormData({
@@ -30,6 +63,17 @@ const EmployerDetailComponent = () => {
     }, [eno]);
 
     return (
+<>
+        {editmodalOpen && (
+            <CommonModal
+                isOpen={editmodalOpen}
+                msg={"수정"}
+                fn={EditFn}
+                closeModal={() => {
+                    setEditModalOpen(false)
+                }}
+            />
+        )}
         <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold text-gray-800 mb-6">고용주 정보 수정</h2>
 
@@ -84,10 +128,12 @@ const EmployerDetailComponent = () => {
             </div>
 
             {/* 수정 버튼 */}
-            <button className="w-full mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button className="w-full mt-6 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            onClick={handleEditClick}>
                 수정 완료
             </button>
         </div>
+</>
     );
 };
 
