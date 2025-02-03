@@ -47,7 +47,11 @@ export const getGoogleAccessToken = async (authCode) => {
         code: authCode,
     });
 
+    console.log('111111111111')
+
     const res = await axios.post(access_token_url, params, header);
+
+    console.log('2222222222222');
 
     console.log(res.data)
 

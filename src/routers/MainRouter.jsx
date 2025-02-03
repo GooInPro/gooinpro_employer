@@ -5,6 +5,7 @@ import ChatRouter from "./ChatRouter.jsx";
 import LoginRouter from "./LoginPageRouter.jsx";
 import MainSelectRouter from "./MainSelectRouter.jsx";
 import EmployerRegisterRouter from "./EmployerRegisterRouter.jsx";
+import PartTimerRouter from "./PartTimerRouter.jsx";
 import MapRouter from "./MapRouter.jsx";
 import JobPostingRouter from "./JobPostingRouter.jsx";
 
@@ -19,8 +20,8 @@ const MainRouter = createBrowserRouter([
     LoginRouter,
     MainSelectRouter,
     EmployerRegisterRouter,
-    MapRouter,
-    JobPostingRouter
-]);
+    PartTimerRouter,
+
+])
 
 export default MainRouter;
