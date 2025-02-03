@@ -1,11 +1,20 @@
 import {Outlet} from "react-router-dom";
 
 export const PartTimerTableColumn = [
-    "pno", "pname", "workDaysCount", "onTimeCount", "lateCount", "earlyLeaveCount", "absenceCount"
+    "pno", "pifilename", "pname", "jpname"
 ]
 
 export const PartTimerTableHeader = [
-    "이름", "근무 일수", "정시 출근", "지각 횟수", "조퇴 횟수", "결근 횟수"
+    "사진", "이름", "근무지"
+
+]
+
+export const ApplicantTableColumn = [
+    "pno", "pifilename", "pname", "jpname", "jpahourlyRate"
+]
+
+export const ApplicantTableHeader = [
+    "사진", "이름", "공고 이름", "원하는 시급"
 ]
 
 function PartTimerIndexPage() {
