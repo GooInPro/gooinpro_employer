@@ -8,12 +8,13 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      "/google-auth": {
-        target: "https://oauth2.googleapis.com",
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/google-auth/, ""),
-      }
+        "/api": {
+            target: "http://localhost:3000", // 백엔드 서버 주소
+            changeOrigin: true,
+            secure: false,
+        }
     }
   }
 })
+
+

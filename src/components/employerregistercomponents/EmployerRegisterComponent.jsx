@@ -7,10 +7,11 @@ import {useNavigate} from "react-router-dom"; // 기본 스타일 가져오기
 
 function EmployerRegisterComponent() {
     const eno = employerStore((state) => state.eno);
+    const setEname = employerStore((state) => state.setEname);
 
     const navigate = useNavigate();
 
-    const [ename, setEname] = useState("");
+    const [ename, setLocalEname] = useState("");
     const [egender, setEgender] = useState(false);
     const [ebirth, setEbirth] = useState(null);
 
@@ -23,7 +24,7 @@ function EmployerRegisterComponent() {
     };
 
     const handleChange = (e) => {
-        setEname(e.target.value);
+        setLocalEname(e.target.value);
     };
 
     const handleButtonClick = () => {
@@ -35,6 +36,7 @@ function EmployerRegisterComponent() {
         };
 
         console.log({eno, employerRegisterDTO});
+        setEname(employerRegisterDTO.ename)
 
         // RegisterEmp 함수 호출
         RegisterEmp(eno, employerRegisterDTO);

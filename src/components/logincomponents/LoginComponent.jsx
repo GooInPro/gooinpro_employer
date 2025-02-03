@@ -1,5 +1,6 @@
 import { getKakaoLoginLink } from "../../api/loginapi/kakaoAPI.js";
 import { getGoogleLoginLink } from "../../api/loginapi/googleAPI.js";
+import {getNaverLoginLink} from "../../api/loginapi/naverAPI.js";
 
 function LoginButtons() {
 
@@ -12,6 +13,13 @@ function LoginButtons() {
         const link = getGoogleLoginLink();
         window.location.href = link;
     }
+
+    const handleClickNaverLogin = () => {
+        const link = getNaverLoginLink();
+        window.location.href = link;
+    }
+
+
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen pb-32 w-full relative">
@@ -39,6 +47,7 @@ function LoginButtons() {
                     src="/naver_login.png"
                     alt="네이버 로그인"
                     className="w-full cursor-pointer rounded-lg border-2 "
+                    onClick={handleClickNaverLogin}
                 />
             </div>
         </div>

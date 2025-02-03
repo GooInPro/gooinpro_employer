@@ -12,3 +12,14 @@ export const EmployerRead = async (eno) => { // getOne
 
     return res.data;
 }
+
+export const EmployerEdit = async (eno, updateData) => {
+
+    console.log("EmployerEdit")
+
+    const res = await jwtAxios.put(`${host}/edit/${eno}`, updateData)
+
+    console.log(res)
+
+    return res.data;
+}

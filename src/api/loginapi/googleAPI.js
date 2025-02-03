@@ -8,9 +8,9 @@ const redirect_uri = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
 
 const client_pw = import.meta.env.VITE_GOOGLE_CLIENT_PW;
 
-// const access_token_url = `https://oauth2.googleapis.com/token`;
+const access_token_url = `https://oauth2.googleapis.com/token`;
 
-const access_token_url = "/google-auth/token"; // cors 때문에 프록시
+// const access_token_url = "/google-auth/token"; // cors 때문에 프록시
 
 const host = `${import.meta.env.VITE_API_HOST}/login/google`;
 
@@ -36,7 +36,7 @@ export const getGoogleAccessToken = async (authCode) => {
     console.log("googleAccees-----------------")
     const header ={
         headers: {
-            "Content_Type":  "application/x-www-form-urlencoded",
+            "Content-Type":  "application/x-www-form-urlencoded",
         },
     };
     const params = new URLSearchParams({ // useSearch안쓰고 해보기

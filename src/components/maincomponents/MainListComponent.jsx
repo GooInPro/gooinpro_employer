@@ -16,6 +16,18 @@ function MainListComponent() {
         navigate("/employer/read/:eno")
     }
 
+    const handleClickRegister = () => {
+        navigate("/jobposting/register");
+    };
+
+    const handleClickNearby = () => {
+        navigate("/map/search");
+    };
+
+    const handleClickMyPosts = () => {
+        navigate("/jobposting/list");
+    };
+
     useEffect(() => {
 
     },[ename])
@@ -26,7 +38,9 @@ function MainListComponent() {
             <div>안녕하세요 {ename}</div>
 
             <div className="flex justify-end w-full">
-                <button className="w-40 h-10 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
+                <button
+                    onClick={handleClickRegister}
+                    className="w-40 h-10 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
                     공고 등록
                 </button>
             </div>
@@ -34,14 +48,14 @@ function MainListComponent() {
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-3 w-full">
                 {/* 주변 근로 공고 보기 */}
                 <div className="flex items-center justify-center">
-                    <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
+                    <button onClick={handleClickNearby} className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
                         주변 근로 공고 보기
                     </button>
                 </div>
 
                 {/* 내 공고 */}
                 <div className="flex items-center justify-center">
-                    <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
+                    <button onClick={handleClickMyPosts} className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
                         내 공고
                     </button>
                 </div>
