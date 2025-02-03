@@ -10,6 +10,12 @@ const ChatRouter ={
         {
             path: 'admin',
             element: <ChatPage/>,
+            meta: {role: 'admin'}
+        },
+        {
+            path: 'part',
+            element: <ChatPage/>,
+            meta: {role: 'part'}
         }
 
     ]

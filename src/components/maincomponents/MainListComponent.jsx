@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import employerStore from "../../stores/employerStore.js";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
@@ -12,8 +11,6 @@ function MainListComponent() {
     const handleChatWithAdmin = () => {
         navigate(`/chat/admin`); // roomId를 기반으로 채팅방 이동
     };
-
-    const navigate = useNavigate();
 
     const handleClickMyPage = () => {
         navigate("/employer/read/:eno")
@@ -70,7 +67,7 @@ function MainListComponent() {
                         onClick={handleChatWithAdmin} // 클릭 시 채팅방으로 이동
                         className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold"
                     >
-                        admin과 채팅하기
+                        관리자와 채팅하기
                     </button>
                 </div>
             </div>

@@ -28,9 +28,9 @@ export const getPartChatRoom = async (pno) => {
     return res.data;
 }
 
-export const deletePartChat = async (erno) => {
+export const deletePartChat = async (rno) => {
 
-    const res = await axios.delete(`${host}/delete/all/${erno}`)
+    const res = await axios.delete(`${host}/delete/all/${rno}`)
 
     console.log(res);
 
