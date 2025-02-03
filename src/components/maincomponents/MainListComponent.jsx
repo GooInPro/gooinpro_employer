@@ -2,11 +2,15 @@ import employerStore from "../../stores/employerStore.js";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
+
 function MainListComponent() {
 
     const ename = employerStore(state => state.ename);
+    const navigate = useNavigate(); // useNavigate 훅 사용하여 라우팅 기능 추가
 
-    const navigate = useNavigate();
+    const handleChatWithAdmin = () => {
+        navigate(`/chat/admin`); // roomId를 기반으로 채팅방 이동
+    };
 
     const handleClickMyPage = () => {
         navigate("/employer/read/:eno")
@@ -42,32 +46,42 @@ function MainListComponent() {
             </div>
 
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-3 w-full">
-                {/* Button 2: 주변 근로 공고 보기 */}
+                {/* 주변 근로 공고 보기 */}
                 <div className="flex items-center justify-center">
                     <button onClick={handleClickNearby} className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
                         주변 근로 공고 보기
                     </button>
                 </div>
 
-                {/* Button 3: 내 공고 */}
+                {/* 내 공고 */}
                 <div className="flex items-center justify-center">
                     <button onClick={handleClickMyPosts} className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
                         내 공고
                     </button>
                 </div>
 
-                {/* Button 4: 내 직원 */}
+                {/* 내 직원 */}
                 <div className="flex items-center justify-center">
                     <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
                         내 직원
                     </button>
                 </div>
 
-                {/* Button 5: 마이페이지 */}
+                {/* 마이페이지 */}
                 <div className="flex items-center justify-center">
                     <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold"
                     onClick={handleClickMyPage}>
                         마이페이지
+                    </button>
+                </div>
+
+                {/* admin과 채팅하기 버튼 */}
+                <div className="flex items-center justify-center">
+                    <button
+                        onClick={handleChatWithAdmin} // 클릭 시 채팅방으로 이동
+                        className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold"
+                    >
+                        관리자와 채팅하기
                     </button>
                 </div>
             </div>
