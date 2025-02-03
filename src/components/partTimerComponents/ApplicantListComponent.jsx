@@ -8,7 +8,7 @@ function ApplicantListComponent() {
     return (
         <div>
             <CommonTableComponent
-                name={"applicant"}
+                name={"partTimer/applicant"}
                 tableHeader={ApplicantTableHeader}
                 column={ApplicantTableColumn}
                 listFn={getApplicantList}
