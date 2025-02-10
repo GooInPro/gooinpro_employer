@@ -39,15 +39,16 @@ const JobPostingEditPage = () => {
     const [showAddressSearch, setShowAddressSearch] = useState(false);
 
     useEffect(() => {
-        // jpno와 eno가 없으면 에러 처리
         if (!jpno || !eno) {
-            console.error("필수 파라미터 jpno, eno가 전달되지 않았습니다.");
+            console.log("파라미터 없음:", {jpno, eno});
             setLoading(false);
             return;
         }
-        // 기존 구인공고 정보 조회
+        console.log("데이터 조회 시작:", {jpno, eno});
         getJobPosting(jpno, eno)
-            .then((data) => {
+            .then((response) => {
+                console.log("조회된 데이터:", response);
+                const data = response.data;
                 setBaseInfo({
                     jpname: data.jpname,
                     jpcontent: data.jpcontent,
@@ -56,23 +57,25 @@ const JobPostingEditPage = () => {
                     jpworkDays: data.jpworkDays,
                     jpminDuration: data.jpminDuration,
                     jpmaxDuration: data.jpmaxDuration,
-                    jpworkStartTime: data.jpworkStartTime,
-                    jpworkEndTime: data.jpworkEndTime
+                    jpworkStartTime: data.jpworkStartTime.substring(0, 5),  // 여기 수정
+                    jpworkEndTime: data.jpworkEndTime.substring(0, 5)       // 여기 수정
                 });
                 setPlaceInfo({
                     wroadAddress: data.wroadAddress,
                     wdetailAddress: data.wdetailAddress,
                     zonecode: data.zonecode || "",
-                    latitude: data.latitude || null,
-                    longitude: data.longitude || null
+                    latitude: data.wlati || null,
+                    longitude: data.wlong || null
                 });
-                setLoading(false);
             })
             .catch((err) => {
-                console.error("구인공고 정보 조회 실패:", err);
+                console.error("조회 실패:", err);
+            })
+            .finally(() => {
                 setLoading(false);
             });
     }, [jpno, eno]);
+
 
     // 모집 조건 입력 변경 처리
     const handleBaseInfoChange = (e) => {
