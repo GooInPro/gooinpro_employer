@@ -21,7 +21,8 @@ const MainRouter = createBrowserRouter([
     MainSelectRouter,
     EmployerRegisterRouter,
     PartTimerRouter,
-
+    MapRouter,
+    JobPostingRouter,
 ])
 
 export default MainRouter;
