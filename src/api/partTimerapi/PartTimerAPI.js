@@ -3,9 +3,10 @@ import employerStore from "../../stores/employerStore.js";
 
 const host = `${import.meta.env.VITE_API_HOST}/partTimer`;
 
-// const eno = employerStore(state => state.eno);
 
-const eno = 31;
+const eno = employerStore.getState().eno;
+
+// const eno = 31;
 
 //내 근로자 리스트
 export const getPartTimerList = async (page) => {
