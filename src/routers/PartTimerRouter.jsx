@@ -5,6 +5,7 @@ const PartTimerListPage = lazy(() => import('../pages/partTimerpages/PartTimerLi
 const PartTimerReadPage = lazy(() => import('../pages/partTimerpages/PartTimerReadPage.jsx'))
 const ApplicantListPage = lazy(() => import('../pages/partTimerpages/ApplicantListPage.jsx'))
 const ApplicantReadPage = lazy(() => import('../pages/partTimerpages/ApplicantReadPage.jsx'))
+const PartTimerCalendarPage = lazy(() => import('../pages/partTimerpages/PartTimerCalendarPage.jsx'))
 
 const PartTimerRouter = {
 
@@ -15,6 +16,7 @@ const PartTimerRouter = {
         {path: 'read/:pno', element: <PartTimerReadPage/>},
         {path: 'applicant/list/:eno', element: <ApplicantListPage/>},
         {path: 'applicant/read/:pno', element: <ApplicantReadPage/>},
+        {path: 'calendar', element: <PartTimerCalendarPage/>},
     ]
 
 }
