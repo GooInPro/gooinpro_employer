@@ -4,9 +4,9 @@ import employerStore from "../../stores/employerStore.js";
 const host = `${import.meta.env.VITE_API_HOST}/partTimer`;
 
 
-const eno = employerStore.getState().eno;
+// const eno = employerStore.getState().eno;
 
-// const eno = 31;
+const eno = 31;
 
 //내 근로자 리스트
 export const getPartTimerList = async (page) => {
@@ -91,9 +91,11 @@ export const getPayByYear = async (year) => {
 }
 
 //급여 포함한 근로자 리스트
-export const getPartTimerListWithPay = async (year, month) => {
+export const getPartTimerListWithPay = async (year, month, page) => {
 
-    const res = await axios.get(`${host}/listWithPay/${eno}?year=${year}&month=${month}`);
+    const pageValue = page || 1;
+
+    const res = await axios.get(`${host}/listWithPay/${eno}?year=${year}&month=${month}&page=${pageValue}`);
 
     return res.data.data;
 }
