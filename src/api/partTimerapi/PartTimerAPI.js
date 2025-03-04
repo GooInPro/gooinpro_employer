@@ -3,7 +3,8 @@ import employerStore from "../../stores/employerStore.js";
 
 const host = `${import.meta.env.VITE_API_HOST}/partTimer`;
 
-// const eno = employerStore(state => state.eno);
+
+// const eno = employerStore.getState().eno;
 
 const eno = 31;
 
@@ -61,6 +62,40 @@ export const getPartTimerWorkHistoryList = async (pno, page) => {
     const pageValue = page || 1;
 
     const res = await axios.get(`${host}/workHistory/${pno}?page=${pageValue}`);
+
+    return res.data.data;
+}
+
+//employer 별 총 급여 get
+export const getTotalPay = async () => {
+
+    const res = await axios.get(`${host}/totalPay/${eno}`);
+
+    return res.data.data;
+}
+
+//급여(연, 월 선택)
+export const getPayByYearMonth = async (year, month) => {
+
+    const res = await axios.get(`${host}/payByYearMonth/${eno}?year=${year}&month=${month}`);
+
+    return res.data.data;
+}
+
+//급여(연도만 선택)
+export const getPayByYear = async (year) => {
+
+    const res = await axios.get(`${host}/payByYear/${eno}?year=${year}`);
+
+    return res.data.data;
+}
+
+//급여 포함한 근로자 리스트
+export const getPartTimerListWithPay = async (year, month, page) => {
+
+    const pageValue = page || 1;
+
+    const res = await axios.get(`${host}/listWithPay/${eno}?year=${year}&month=${month}&page=${pageValue}`);
 
     return res.data.data;
 }

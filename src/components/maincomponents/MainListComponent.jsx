@@ -2,10 +2,14 @@ import employerStore from "../../stores/employerStore.js";
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 
+const useEmployerStore = employerStore;
+
 
 function MainListComponent() {
 
-    const ename = employerStore(state => state.ename);
+    const eno = useEmployerStore(state => state.eno);
+
+    const ename = useEmployerStore(state => state.ename);
     const navigate = useNavigate(); // useNavigate 훅 사용하여 라우팅 기능 추가
 
     const handleChatWithAdmin = () => {
@@ -13,7 +17,7 @@ function MainListComponent() {
     };
 
     const handleClickMyPage = () => {
-        navigate("/employer/read/:eno")
+        navigate(`/employer/read/${eno}`)
     }
 
     const handleClickRegister = () => {
@@ -27,6 +31,11 @@ function MainListComponent() {
     const handleClickMyPosts = () => {
         navigate("/jobposting/list");
     };
+
+    const handleClickMyPartTimer = () => {
+
+        navigate(`/partTimer/list/${eno}`)
+    }
 
     useEffect(() => {
 
@@ -62,7 +71,8 @@ function MainListComponent() {
 
                 {/* 내 직원 */}
                 <div className="flex items-center justify-center">
-                    <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold">
+                    <button className="w-40 h-40 rounded-xl bg-blue-300 hover:bg-blue-400 text-white font-semibold"
+                    onClick={handleClickMyPartTimer}>
                         내 직원
                     </button>
                 </div>
