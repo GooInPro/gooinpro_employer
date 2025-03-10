@@ -27,7 +27,7 @@ function NaverRedirectPage() {
                 setRefreshToken(member.data.refreshToken);
 
                 if(member.data.isNew === false) {
-                    navigate("/main/list")
+                    navigate("/partTimer/calendar")
                 } else {
                     navigate("/employerRegister/select");
                 }
