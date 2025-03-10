@@ -1,4 +1,5 @@
 import {Outlet} from "react-router-dom";
+import BasicLayout from "../../layout/BasicLayout.jsx";
 
 export const PartTimerTableColumn = [
     "pno", "pifilename", "pname", "jpname"
@@ -28,7 +29,9 @@ export const PartTimerWithPayTableHeader = [
 function PartTimerIndexPage() {
     return (
         <>
-            <Outlet/>
+          <BasicLayout>
+              <Outlet/>
+          </BasicLayout>
         </>
     );
 }
