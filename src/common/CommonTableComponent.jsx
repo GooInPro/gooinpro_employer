@@ -59,10 +59,10 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
         if (col === "qstatus" || col === "castatus" || col === "cpstatus") {
             return (
                 <span
-                    className={`px-2 py-1 rounded-lg ${
+                    className={`px-2 py-1 rounded-lg text-xs font-bold ${
                         value
-                            ? "bg-green-200 text-green-800 font-bold"
-                            : "bg-red-200 text-red-800 font-bold"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
                     }`}
                 >
                     {value ? "답변완료" : "답변대기"}
@@ -89,44 +89,37 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
     }, [searchParams, name]);
 
     return (
-        <div className="overflow-x-auto p-4">
-            <table className="table-fixed w-full leading-normal border border-gray-300 rounded-lg shadow-lg">
-                <thead className="bg-gradient-to-r from-green-400 to-green-500 text-white">
-                <tr className="text-sm font-semibold text-left uppercase tracking-wide">
-                    {tableHeader.map((item, index) => (
-                        <th
-                            key={item}
-                            className="px-5 py-3 text-center"
-                            style={{ width: `${100 / tableHeader.length}%` }}
-                        >
-                            {item}
-                        </th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody className="bg-white">
-                {loading ? (
-                    <tr>
-                        <td
-                            colSpan={tableHeader.length}
-                            className="text-center py-4 text-gray-500"
-                        >
-                            Loading...
-                        </td>
+        <div className="p-4 bg-white rounded-lg shadow-md">
+            <div className="overflow-x-auto">
+                <table className="w-full text-xs md:text-sm text-gray-700 border border-gray-300 rounded-lg shadow-md">
+                    <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+                    <tr className="text-xs md:text-sm font-semibold text-left tracking-wide">
+                        {tableHeader.map((item) => (
+                            <th
+                                key={item}
+                                className="px-4 py-3 text-center whitespace-nowrap"
+                            >
+                                {item}
+                            </th>
+                        ))}
                     </tr>
-                ) : (
-                    data.dtoList.length > 0 ? (
+                    </thead>
+                    <tbody className="bg-white">
+                    {loading ? (
+                        <tr>
+                            <td colSpan={tableHeader.length} className="text-center py-4 text-gray-500">
+                                🔄 데이터를 불러오는 중...
+                            </td>
+                        </tr>
+                    ) : data.dtoList.length > 0 ? (
                         data.dtoList.map((item) => (
                             <tr
                                 key={item.id || item[column[0]]}
-                                className="hover:bg-gray-100 border-b border-gray-200"
+                                className="hover:bg-gray-200 border-b border-gray-200 transition cursor-pointer"
                                 onClick={() => linkClick(item[column[0]])}
                             >
                                 {column.slice(1).map((col) => (
-                                    <td
-                                        key={col}
-                                        className={`px-5 py-4 text-sm text-center truncate`}
-                                    >
+                                    <td key={col} className="px-4 py-3 text-center truncate">
                                         {renderCell(col, item[col])}
                                     </td>
                                 ))}
@@ -134,26 +127,23 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
                         ))
                     ) : (
                         <tr>
-                            <td
-                                colSpan={tableHeader.length}
-                                className="text-center py-4 text-gray-500"
-                            >
-                                해당 조건에 맞는 검색 결과가 없습니다.
+                            <td colSpan={tableHeader.length} className="text-center py-4 text-gray-500">
+                                ❌ 검색 결과가 없습니다.
                             </td>
                         </tr>
-                    )
-                )}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colSpan={column.length}>
-                        <div className="flex justify-center items-center py-4">
-                            <PageComponent pageResponse={data} changePage={changePage} />
-                        </div>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
+                    )}
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colSpan={column.length} className="py-4">
+                            <div className="flex justify-center">
+                                <PageComponent pageResponse={data} changePage={changePage} />
+                            </div>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     );
 }
