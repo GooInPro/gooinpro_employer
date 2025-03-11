@@ -6,14 +6,14 @@ import {PartTimerTableColumn, PartTimerTableHeader} from "../../pages/partTimerp
 function PartTimerListComponent() {
 
     return (
-        <div>
+        <>
             <CommonTableComponent
                 name={"partTimer"}
                 tableHeader={PartTimerTableHeader}
                 column={PartTimerTableColumn}
                 listFn={getPartTimerList}
             ></CommonTableComponent>
-        </div>
+        </>
     );
 }
 

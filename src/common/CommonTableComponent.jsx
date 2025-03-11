@@ -89,60 +89,40 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
     }, [searchParams, name]);
 
     return (
-        <div className="p-4 bg-white rounded-lg shadow-md">
-            <div className="overflow-x-auto">
-                <table className="w-full text-xs md:text-sm text-gray-700 border border-gray-300 rounded-lg shadow-md">
-                    <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
-                    <tr className="text-xs md:text-sm font-semibold text-left tracking-wide">
-                        {tableHeader.map((item) => (
-                            <th
-                                key={item}
-                                className="px-4 py-3 text-center whitespace-nowrap"
-                            >
-                                {item}
-                            </th>
-                        ))}
-                    </tr>
-                    </thead>
-                    <tbody className="bg-white">
-                    {loading ? (
-                        <tr>
-                            <td colSpan={tableHeader.length} className="text-center py-4 text-gray-500">
-                                🔄 데이터를 불러오는 중...
-                            </td>
-                        </tr>
-                    ) : data.dtoList.length > 0 ? (
-                        data.dtoList.map((item) => (
-                            <tr
-                                key={item.id || item[column[0]]}
-                                className="hover:bg-gray-200 border-b border-gray-200 transition cursor-pointer"
-                                onClick={() => linkClick(item[column[0]])}
-                            >
-                                {column.slice(1).map((col) => (
-                                    <td key={col} className="px-4 py-3 text-center truncate">
-                                        {renderCell(col, item[col])}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan={tableHeader.length} className="text-center py-4 text-gray-500">
-                                ❌ 검색 결과가 없습니다.
-                            </td>
-                        </tr>
-                    )}
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colSpan={column.length} className="py-4">
-                            <div className="flex justify-center">
-                                <PageComponent pageResponse={data} changePage={changePage} />
-                            </div>
-                        </td>
-                    </tr>
-                    </tfoot>
-                </table>
+        <div className="p-4 bg-white rounded-lg shadow-md w-full mx-auto overflow-hidden mb-12">
+            {/* 모바일에서 카드 형식으로 리스트를 보여줌 */}
+            <div className="space-y-4">
+                {loading ? (
+                    <div className="text-center text-gray-500">
+                        🔄 데이터를 불러오는 중...
+                    </div>
+                ) : data.dtoList.length > 0 ? (
+                    data.dtoList.map((item) => (
+                        <div
+                            key={item.id || item[column[0]]}
+                            className="p-4 bg-white shadow-md rounded-lg border hover:shadow-lg transition"
+                            onClick={() => linkClick(item[column[0]])}
+                        >
+                            {column.slice(1).map((col, index) => (
+                                <div key={col} className="flex justify-between py-2">
+                                    <span className="font-semibold text-blue-500">
+                                        {tableHeader[index]} {/* header 배열에서 전체 항목 사용 */}
+                                    </span>
+                                    <span>{renderCell(col, item[col])}</span>
+                                </div>
+                            ))}
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center text-gray-500">
+                        ❌ 검색 결과가 없습니다.
+                    </div>
+                )}
+            </div>
+
+            {/* 페이지 네비게이션 */}
+            <div className="mt-6">
+                <PageComponent pageResponse={data} changePage={changePage} />
             </div>
         </div>
     );
