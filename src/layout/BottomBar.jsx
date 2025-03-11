@@ -42,7 +42,7 @@ const BottomBar = () => {
             <nav
                 className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 bg-white border-t border-gray-200 shadow-lg transition-transform duration-300 z-[9999] w-full max-w-[30rem] ${isHidden ? 'translate-y-full' : ''}`}
             >
-                <div className="flex justify-around items-center px-4 py-3">
+                <div className="flex justify-around items-center px-0 py-3">
                     {/* 주변 공고 */}
                     <Link
                         to="/map/search"

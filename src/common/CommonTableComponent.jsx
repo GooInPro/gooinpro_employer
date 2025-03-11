@@ -59,10 +59,10 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
         if (col === "qstatus" || col === "castatus" || col === "cpstatus") {
             return (
                 <span
-                    className={`px-2 py-1 rounded-lg ${
+                    className={`px-2 py-1 rounded-lg text-xs font-bold ${
                         value
-                            ? "bg-green-200 text-green-800 font-bold"
-                            : "bg-red-200 text-red-800 font-bold"
+                            ? "bg-green-500 text-white"
+                            : "bg-red-500 text-white"
                     }`}
                 >
                     {value ? "답변완료" : "답변대기"}
@@ -89,71 +89,41 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
     }, [searchParams, name]);
 
     return (
-        <div className="overflow-x-auto p-4">
-            <table className="table-fixed w-full leading-normal border border-gray-300 rounded-lg shadow-lg">
-                <thead className="bg-gradient-to-r from-green-400 to-green-500 text-white">
-                <tr className="text-sm font-semibold text-left uppercase tracking-wide">
-                    {tableHeader.map((item, index) => (
-                        <th
-                            key={item}
-                            className="px-5 py-3 text-center"
-                            style={{ width: `${100 / tableHeader.length}%` }}
-                        >
-                            {item}
-                        </th>
-                    ))}
-                </tr>
-                </thead>
-                <tbody className="bg-white">
+        <div className="p-4 bg-white rounded-lg shadow-md w-full mx-auto overflow-hidden mb-12">
+            {/* 모바일에서 카드 형식으로 리스트를 보여줌 */}
+            <div className="space-y-4">
                 {loading ? (
-                    <tr>
-                        <td
-                            colSpan={tableHeader.length}
-                            className="text-center py-4 text-gray-500"
+                    <div className="text-center text-gray-500">
+                        🔄 데이터를 불러오는 중...
+                    </div>
+                ) : data.dtoList.length > 0 ? (
+                    data.dtoList.map((item) => (
+                        <div
+                            key={item.id || item[column[0]]}
+                            className="p-4 bg-white shadow-md rounded-lg border hover:shadow-lg transition"
+                            onClick={() => linkClick(item[column[0]])}
                         >
-                            Loading...
-                        </td>
-                    </tr>
-                ) : (
-                    data.dtoList.length > 0 ? (
-                        data.dtoList.map((item) => (
-                            <tr
-                                key={item.id || item[column[0]]}
-                                className="hover:bg-gray-100 border-b border-gray-200"
-                                onClick={() => linkClick(item[column[0]])}
-                            >
-                                {column.slice(1).map((col) => (
-                                    <td
-                                        key={col}
-                                        className={`px-5 py-4 text-sm text-center truncate`}
-                                    >
-                                        {renderCell(col, item[col])}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td
-                                colSpan={tableHeader.length}
-                                className="text-center py-4 text-gray-500"
-                            >
-                                해당 조건에 맞는 검색 결과가 없습니다.
-                            </td>
-                        </tr>
-                    )
-                )}
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colSpan={column.length}>
-                        <div className="flex justify-center items-center py-4">
-                            <PageComponent pageResponse={data} changePage={changePage} />
+                            {column.slice(1).map((col, index) => (
+                                <div key={col} className="flex justify-between py-2">
+                                    <span className="font-semibold text-blue-500">
+                                        {tableHeader[index]} {/* header 배열에서 전체 항목 사용 */}
+                                    </span>
+                                    <span>{renderCell(col, item[col])}</span>
+                                </div>
+                            ))}
                         </div>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
+                    ))
+                ) : (
+                    <div className="text-center text-gray-500">
+                        ❌ 검색 결과가 없습니다.
+                    </div>
+                )}
+            </div>
+
+            {/* 페이지 네비게이션 */}
+            <div className="mt-6">
+                <PageComponent pageResponse={data} changePage={changePage} />
+            </div>
         </div>
     );
 }
