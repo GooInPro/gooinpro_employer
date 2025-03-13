@@ -15,8 +15,8 @@ const PartTimerRouter = {
 
         {path: 'list', element: <PartTimerListPage/>},
         {path: 'read/:pno', element: <PartTimerReadPage/>},
-        {path: 'applicant/list', element: <ApplicantListPage/>},
-        {path: 'applicant/read/:pno', element: <ApplicantReadPage/>},
+        {path: 'applicant/list/:jpno', element: <ApplicantListPage/>},
+        {path: 'applicant/read/:jpano', element: <ApplicantReadPage/>},
         {path: 'calendar', element: <PartTimerCalendarPage/>},
         {path: 'pay', element: <PayCheckPage/>},
     ]

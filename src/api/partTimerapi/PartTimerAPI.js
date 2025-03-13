@@ -37,13 +37,11 @@ export const getPartTimerWorkStatus = async (pno) => {
 }
 
 //내 지원자 리스트
-export const getApplicantList = async (page) => {
-
-    const eno = getEno();  // eno 값을 가져와서 사용
+export const getApplicantList = async (jpno, page) => {
 
     const pageValue = page || 1;
 
-    const res = await axios.get(`${host}/applicant/list/${eno}?page=${pageValue}`);
+    const res = await axios.get(`${host}/applicant/list/${jpno}?page=${pageValue}`);
 
     console.log(res.data.data);
 
@@ -51,9 +49,9 @@ export const getApplicantList = async (page) => {
 }
 
 //지원자 상세보기
-export const readApplicant = async (jpano, pno) => {
+export const readApplicant = async (jpano) => {
 
-    const res = await axios.get(`${host}/read/${jpano}/${pno}`);
+    const res = await axios.get(`${host}/applicant/read/${jpano}`);
 
     return res.data.data;
 }
