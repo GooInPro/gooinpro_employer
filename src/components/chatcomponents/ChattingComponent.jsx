@@ -2,7 +2,10 @@ import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import {getChatMessages, outChatRoom} from "../../api/chatapi/chatAPI.js";
 import { Client } from "@stomp/stompjs";
-import CommonModal from "../../common/CommonModal.jsx"; // STOMP client import
+import CommonModal from "../../common/CommonModal.jsx";
+import employerStore from "../../stores/employerStore.js"; // STOMP client import
+
+const useEmployerStore = employerStore;
 
 function ChattingComponent() {
 
@@ -11,7 +14,7 @@ function ChattingComponent() {
     const navigate = useNavigate();
 
     const roomName = searchParams.get("roomName");
-    const email = "myj0248@naver.com";
+    const email = useEmployerStore(state => state.eemail);
 
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState(""); // 입력 메시지 상태
