@@ -26,50 +26,62 @@ function PartTimerReadComponent() {
 
     return (
         <div className="flex flex-col items-center p-4">
-            <div className="bg-white shadow-lg rounded-lg w-full max-w-sm p-6">
-                <h2 className="text-2xl font-semibold text-center mb-4">근로자 상세 정보</h2>
-                <div className="space-y-4">
-                    <div className="flex justify-between">
-                        <span className="font-medium">이름</span>
-                        <span className="text-gray-700">{data.partTimer.pname}</span>
+            <div className="bg-white shadow-md rounded-lg w-full p-6 border">
+                {/* 근로자 정보 */}
+                <h2 className="text-2xl font-bold text-center text-blue-500 mb-6">근로자 상세 정보</h2>
+                <div className="grid grid-cols-2 gap-6">
+                    <div className="flex flex-col">
+                        <span className="text-lg font-bold text-gray-700">이름</span>
+                        <span className="text-gray-800">{data.partTimer.pname ?? "정보 없음"}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">이메일</span>
-                        <span className="text-gray-700">{data.partTimer.pemail}</span>
+                    <div className="flex flex-col">
+                        <span className="text-lg font-bold text-gray-700">이메일</span>
+                        <span className="text-gray-800">{data.partTimer.pemail ?? "정보 없음"}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">성별</span>
-                        <span
-                            className="text-gray-700">{data.partTimer.pgender ? '남자' : '여자'}</span>
+                    <div className="flex flex-col">
+                        <span className="text-lg font-bold text-gray-700">성별</span>
+                        <span className="text-gray-800">
+                    {data.partTimer.pgender !== undefined ? (data.partTimer.pgender ? "남자" : "여자") : "정보 없음"}
+                </span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">주소</span>
-                        <span className="text-gray-700">{data.partTimer.proadAddress} {data.partTimer.pdetailAddress}</span>
+                    <div className="flex flex-col">
+                        <span className="text-lg font-bold text-gray-700">생년월일</span>
+                        <span className="text-gray-800">
+                    {data.partTimer.pbirth ? new Date(data.partTimer.pbirth).toLocaleDateString() : "정보 없음"}
+                </span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">생년월일</span>
-                        <span
-                            className="text-gray-700">{data.partTimer.pbirth ? new Date(data.partTimer.pbirth).toLocaleDateString() : '정보 없음'}</span>
+                    <div className="flex flex-col col-span-2">
+                        <span className="text-lg font-bold text-gray-700">주소</span>
+                        <span className="text-gray-800">
+                    {data.partTimer.proadAddress && data.partTimer.pdetailAddress
+                        ? `${data.partTimer.proadAddress} ${data.partTimer.pdetailAddress}`
+                        : "정보 없음"}
+                </span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">근무일 수</span>
-                        <span className="text-gray-700">{data.workLogs.workDaysCount}</span>
+                </div>
+
+                {/* 근무 현황 */}
+                <h3 className="text-xl font-bold text-blue-500 mt-8 mb-4">근무 현황</h3>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-blue-50 rounded-lg p-3 flex flex-col items-center">
+                        <span className="text-lg font-bold text-gray-700">근무일 수</span>
+                        <span className="text-2xl font-bold text-blue-600">{data.workLogs.workDaysCount ?? 0}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">정시 출근</span>
-                        <span className="text-gray-700">{data.workLogs.onTimeCount}</span>
+                    <div className="bg-blue-50 rounded-lg p-3 flex flex-col items-center">
+                        <span className="text-lg font-bold text-gray-700">정시 출근</span>
+                        <span className="text-2xl font-bold text-blue-600">{data.workLogs.onTimeCount ?? 0}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">지각 횟수</span>
-                        <span className="text-gray-700">{data.workLogs.lateCount}</span>
+                    <div className="bg-blue-50 rounded-lg p-3 flex flex-col items-center">
+                        <span className="text-lg font-bold text-gray-700">지각 횟수</span>
+                        <span className="text-2xl font-bold text-blue-600">{data.workLogs.lateCount ?? 0}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">조기 퇴근</span>
-                        <span className="text-gray-700">{data.workLogs.earlyLeaveCount}</span>
+                    <div className="bg-blue-50 rounded-lg p-3 flex flex-col items-center">
+                        <span className="text-lg font-bold text-gray-700">조기 퇴근</span>
+                        <span className="text-2xl font-bold text-blue-600">{data.workLogs.earlyLeaveCount ?? 0}</span>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="font-medium">결근 횟수</span>
-                        <span className="text-gray-700">{data.workLogs.absenceCount}</span>
+                    <div className="bg-blue-50 rounded-lg p-3 flex flex-col items-center col-span-2">
+                        <span className="text-lg font-bold text-gray-700">결근 횟수</span>
+                        <span className="text-2xl font-bold text-blue-600">{data.workLogs.absenceCount ?? 0}</span>
                     </div>
                 </div>
             </div>
