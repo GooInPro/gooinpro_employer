@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { getChatRoomList } from "../../api/chatapi/chatAPI.js";
 import {useNavigate} from "react-router-dom";
+import employerStore from "../../stores/employerStore.js";
+
+const useEmployerStore = employerStore;
 
 function ChatListComponent() {
 
-    const email = "myj0248@naver.com";
+    const email = useEmployerStore(state => state.eemail);
     const [data, setData] = useState([]);
 
     const navigate = useNavigate();
