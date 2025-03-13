@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import { getChatRoomList } from "../../api/chatapi/chatAPI.js";
+import {useNavigate} from "react-router-dom";
 
 function ChatListComponent() {
+
     const email = "myj0248@naver.com";
     const [data, setData] = useState([]);
 
-    const roomClick = (id) => {
+    const navigate = useNavigate();
 
+    const roomClick = (id, roomName) => {
 
+        navigate(`/chat/chatting/${id}?roomName=${roomName}`);
     }
 
     useEffect(() => {
-        getChatRoomList(email)
-            .then(res => {
+        getChatRoomList(email).then(res => {
+
                 setData(res);
                 console.log(res);
             })
@@ -32,14 +36,14 @@ function ChatListComponent() {
                         <div
                             key={room.id}
                             className="p-4 bg-white shadow-md rounded-lg border border-gray-200 hover:shadow-lg transition cursor-pointer"
-                            onClick={roomClick(room.id)}
+                            onClick={() => roomClick(room.id, room.roomName)}
                         >
                             <div className="flex flex-col space-y-2">
                                 <span className="text-lg font-semibold text-blue-500">
-                                    {room.roomName}
+                                    {room.roomName || ''}
                                 </span>
-                                <span className="text-gray-600">{room.message}</span>
-                                <span className="text-sm text-gray-400">{room.sentAt}</span>
+                                <span className="text-gray-600">{room.message || ''}</span>
+                                <span className="text-sm text-gray-400">{room.sentAt || ''}</span>
                             </div>
                         </div>
                     ))

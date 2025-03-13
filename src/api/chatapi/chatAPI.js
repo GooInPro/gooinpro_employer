@@ -9,3 +9,11 @@ export const getChatRoomList = async (email) => {
 
     return res.data;
 }
+
+//채팅방 메세지 get
+export const getChatMessages = async (id) => {
+
+    const res = await axios.get(`${host}/chat/load/${id}`);
+
+    return res.data;
+}
