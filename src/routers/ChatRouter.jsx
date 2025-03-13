@@ -1,23 +1,15 @@
 
-import ChatPage from "../pages/chatpages/ChatPage.jsx";
-import ChatIndexPage from "../pages/chatpages/ChatIndexPage.jsx";
+import {lazy} from "react";
+
+const ChatIndexPage = lazy(() => import("../pages/chatpages/ChatIndexPage.jsx"));
+const ChatListPage = lazy(() => import('../pages/chatpages/ChatListPage.jsx'))
 
 
 const ChatRouter ={
     path: '/chat',
     element: <ChatIndexPage/>,
     children: [
-        {
-            path: 'admin',
-            element: <ChatPage/>,
-            meta: {role: 'admin'}
-        },
-        {
-            path: 'part',
-            element: <ChatPage/>,
-            meta: {role: 'part'}
-        }
-
+        {path: '', element: <ChatListPage/>}    //chat 의 기본 = listPage
     ]
 }
 export default ChatRouter;
