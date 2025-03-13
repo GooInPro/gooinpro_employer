@@ -17,3 +17,11 @@ export const getChatMessages = async (id) => {
 
     return res.data;
 }
+
+//채팅방 나가기(DTO = email, roomId)
+export const outChatRoom = async (dto) => {
+
+    const res = await axios.put(`${host}/chatroom/out`, dto);
+
+    return res.data;
+}

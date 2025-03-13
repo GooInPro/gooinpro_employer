@@ -1,12 +1,14 @@
-import {useParams, useSearchParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { getChatMessages } from "../../api/chatapi/chatAPI.js";
-import { Client } from "@stomp/stompjs"; // STOMP client import
+import {getChatMessages, outChatRoom} from "../../api/chatapi/chatAPI.js";
+import { Client } from "@stomp/stompjs";
+import CommonModal from "../../common/CommonModal.jsx"; // STOMP client import
 
 function ChattingComponent() {
 
     const { id } = useParams();
     const [ searchParams ] = useSearchParams();
+    const navigate = useNavigate();
 
     const roomName = searchParams.get("roomName");
     const email = "myj0248@naver.com";
@@ -14,6 +16,7 @@ function ChattingComponent() {
     const [messages, setMessages] = useState([]);
     const [inputText, setInputText] = useState(""); // 입력 메시지 상태
     const [sending, setSending] = useState(false); // 메시지 전송 중 여부
+    const [outModalOpen, setOutModalOpen] = useState(false);
 
     const chatContainerRef = useRef(null); // 스크롤 유지용
     const socketRef = useRef(null); // STOMP client
@@ -60,6 +63,15 @@ function ChattingComponent() {
         };
     }, [id]);
 
+    // 새로운 메시지가 추가될 때 자동 스크롤
+    useEffect(() => {
+
+        if (chatContainerRef.current) {
+
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
+
     // 메시지 전송 함수
     const sendMessage = () => {
 
@@ -87,55 +99,84 @@ function ChattingComponent() {
         setSending(false); // 전송 완료 후 상태 초기화
     };
 
-    // 새로운 메시지가 추가될 때 자동 스크롤
-    useEffect(() => {
+    const handleOutClick = () => {
 
-        if (chatContainerRef.current) {
+        setOutModalOpen(true);
+    }
 
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [messages]);
+    const leaveRoomFn = () => {
+
+        const dto = {email: email, roomId: id};
+
+        outChatRoom(dto).then(() => {
+
+            setOutModalOpen(false);
+            navigate("/chat");
+        })
+    }
 
     return (
-        <div className="flex flex-col h-full bg-gray-100 relative">
-            {/* 채팅 헤더 */}
-            <div className="bg-blue-500 text-white text-lg font-bold py-3 px-4 shadow-md">
-                {roomName}
-            </div>
-
-            {/* 채팅 메시지 영역 */}
-            <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 pb-20">
-                {messages.map((msg, index) => (
-                    <div key={index} className={`flex ${msg.senderEmail === email ? "justify-end" : "justify-start"}`}>
-                        <div
-                            className={`max-w-[70%] px-4 py-2 rounded-lg text-white shadow-md ${
-                                msg.senderEmail === email ? "bg-blue-500" : "bg-gray-400"
-                            }`}
-                        >
-                            <p className="text-sm">{msg.message}</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            {/* 메시지 입력창 */}
-            <div className="absolute bottom-16 left-0 w-full bg-white p-3 flex items-center border-t shadow-md z-10">
-                <input
-                    type="text"
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && sendMessage()} // 엔터 키 입력 시 메시지 전송
-                    className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="메시지를 입력하세요..."
+        <>
+            {outModalOpen && (
+                <CommonModal
+                    isOpen={outModalOpen}
+                    msg={"퇴장"}
+                    fn={leaveRoomFn}
+                    closeModal={() => {
+                        setOutModalOpen(false)
+                    }}
                 />
-                <button
-                    onClick={sendMessage}
-                    className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
-                    전송
-                </button>
+            )}
+
+            <div className="flex flex-col h-full bg-gray-100 relative">
+                {/* 채팅 헤더 */}
+                <div
+                    className="bg-blue-500 text-white text-lg font-bold py-3 px-4 shadow-md flex justify-between items-center">
+                    <span>{roomName}</span>
+                    <span
+                        onClick={handleOutClick}
+                        className="text-sm text-red-300 cursor-pointer hover:text-red-500 transition-colors duration-200"
+                    >
+                    나가기
+                </span>
+                </div>
+
+                {/* 채팅 메시지 영역 */}
+                <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 pb-20">
+                    {messages.map((msg, index) => (
+                        <div key={index}
+                             className={`flex ${msg.senderEmail === email ? "justify-end" : "justify-start"}`}>
+                            <div
+                                className={`max-w-[70%] px-4 py-2 rounded-lg text-white shadow-md ${
+                                    msg.senderEmail === email ? "bg-blue-500" : "bg-gray-400"
+                                }`}
+                            >
+                                <p className="text-sm">{msg.message}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* 메시지 입력창 */}
+                <div
+                    className="absolute bottom-16 left-0 w-full bg-white p-3 flex items-center border-t shadow-md z-10">
+                    <input
+                        type="text"
+                        value={inputText}
+                        onChange={(e) => setInputText(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && sendMessage()} // 엔터 키 입력 시 메시지 전송
+                        className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="메시지를 입력하세요..."
+                    />
+                    <button
+                        onClick={sendMessage}
+                        className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    >
+                        전송
+                    </button>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
