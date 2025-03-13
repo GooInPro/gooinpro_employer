@@ -14,6 +14,7 @@ function ApplicantReadComponent() {
         readApplicant(0, pno).then((res) => {
 
             setData(res);
+            console.log(res);
         })
     }, [pno]);
 

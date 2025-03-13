@@ -4,12 +4,12 @@ import employerStore from "../../stores/employerStore.js";
 const host = `${import.meta.env.VITE_API_HOST}/partTimer`;
 
 
-// const eno = employerStore.getState().eno;
-
-const eno = 31;
+const getEno = () => employerStore.getState().eno;
 
 //내 근로자 리스트
 export const getPartTimerList = async (page) => {
+
+    const eno = getEno();  // eno 값을 가져와서 사용
 
     const pageValue = page || 1;
 
@@ -38,6 +38,8 @@ export const getPartTimerWorkStatus = async (pno) => {
 
 //내 지원자 리스트
 export const getApplicantList = async (page) => {
+
+    const eno = getEno();  // eno 값을 가져와서 사용
 
     const pageValue = page || 1;
 
@@ -69,6 +71,8 @@ export const getPartTimerWorkHistoryList = async (pno, page) => {
 //employer 별 총 급여 get
 export const getTotalPay = async () => {
 
+    const eno = getEno();  // eno 값을 가져와서 사용
+
     const res = await axios.get(`${host}/totalPay/${eno}`);
 
     return res.data.data;
@@ -76,6 +80,8 @@ export const getTotalPay = async () => {
 
 //급여(연, 월 선택)
 export const getPayByYearMonth = async (year, month) => {
+
+    const eno = getEno();  // eno 값을 가져와서 사용
 
     const res = await axios.get(`${host}/payByYearMonth/${eno}?year=${year}&month=${month}`);
 
@@ -85,6 +91,8 @@ export const getPayByYearMonth = async (year, month) => {
 //급여(연도만 선택)
 export const getPayByYear = async (year) => {
 
+    const eno = getEno();  // eno 값을 가져와서 사용
+
     const res = await axios.get(`${host}/payByYear/${eno}?year=${year}`);
 
     return res.data.data;
@@ -92,6 +100,8 @@ export const getPayByYear = async (year) => {
 
 //급여 포함한 근로자 리스트
 export const getPartTimerListWithPay = async (year, month, page) => {
+
+    const eno = getEno();  // eno 값을 가져와서 사용
 
     const pageValue = page || 1;
 
