@@ -1,0 +1,21 @@
+{
+  "name": "GooInPro_Employer",
+  "short_name": "GooInPro_Employer",
+  "description": "GooInPro for Employer",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3393EA",
+  "icons": [
+    {
+      "src": "/icons/192_Icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/512_Icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
