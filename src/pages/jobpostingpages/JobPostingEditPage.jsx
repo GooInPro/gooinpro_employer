@@ -57,10 +57,11 @@ const JobPostingEditPage = () => {
                     jpworkDays: data.jpworkDays,
                     jpminDuration: data.jpminDuration,
                     jpmaxDuration: data.jpmaxDuration,
-                    jpworkStartTime: data.jpworkStartTime.substring(0, 5),  // 여기 수정
-                    jpworkEndTime: data.jpworkEndTime.substring(0, 5)       // 여기 수정
+                    jpworkStartTime: data.jpworkStartTime.substring(0, 5),
+                    jpworkEndTime: data.jpworkEndTime.substring(0, 5)
                 });
                 setPlaceInfo({
+                    wpno: data.wpno,  // wpno 추가
                     wroadAddress: data.wroadAddress,
                     wdetailAddress: data.wdetailAddress,
                     zonecode: data.zonecode || "",
@@ -114,14 +115,24 @@ const JobPostingEditPage = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const payload = { ...baseInfo, ...placeInfo };
+            const payload = {
+                ...baseInfo,
+                wpno: placeInfo.wpno,
+                wroadAddress: placeInfo.wroadAddress,
+                wdetailAddress: placeInfo.wdetailAddress
+            };
+
+            console.log("[DEBUG] 수정 요청 payload:", payload);
+
             const result = await updateJobPosting(jpno, payload);
+
+            console.log("[DEBUG] 수정 응답:", result); // 개발용 응답 로그
+
             alert("구인공고가 성공적으로 수정되었습니다!");
-            console.log("수정 결과:", result);
             navigate("/employer/jobposting/list");
         } catch (err) {
-            console.error("구인공고 수정 실패:", err);
-            alert("수정 중 오류가 발생했습니다.");
+            console.error("[ERROR] 수정 실패 상세:", err.response?.data || err);
+            alert(`수정 실패: ${err.message}`);
         }
     };
 
