@@ -125,7 +125,7 @@ const MapSearchPage = () => {
                             const coords = await geocodeAddress(wp.wroadAddress);
                             return { ...wp, lat: coords.lat, lng: coords.lng };
                         } catch (e) {
-                            return null;``
+                            return null;
                         }
                     })
                 );

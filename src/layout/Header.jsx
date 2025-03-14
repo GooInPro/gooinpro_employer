@@ -1,9 +1,16 @@
+import {Link} from "react-router-dom";
 
 
 function Header() {
+
+
     return (
         <div>
-            <img src="/public/G_Logo_Header.jpg" alt="logo" />
+            <Link
+                to="/partTimer/calendar"
+            >
+            <img src="/G_LOGO_Header.jpeg" alt="logo" />
+            </Link>
         </div>
     )
 }
