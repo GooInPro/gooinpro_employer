@@ -1,9 +1,16 @@
+import {Link} from "react-router-dom";
 
 
 function Header() {
+
+
     return (
         <div>
-            <h1 className="text-xl font-bold">gooinpro</h1>
+            <Link
+                to="/partTimer/calendar"
+            >
+            <img src="/G_LOGO_Header.jpeg" alt="logo" />
+            </Link>
         </div>
     )
 }

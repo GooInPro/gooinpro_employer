@@ -13,12 +13,12 @@ const PartTimerRouter = {
     path: '/partTimer', element: <PartTimerIndexPage/>,
     children: [
 
-        {path: 'list/:eno', element: <PartTimerListPage/>},
+        {path: 'list', element: <PartTimerListPage/>},
         {path: 'read/:pno', element: <PartTimerReadPage/>},
-        {path: 'applicant/list/:eno', element: <ApplicantListPage/>},
-        {path: 'applicant/read/:pno', element: <ApplicantReadPage/>},
+        {path: 'applicant/list/:jpno', element: <ApplicantListPage/>},
+        {path: 'applicant/read/:jpano', element: <ApplicantReadPage/>},
         {path: 'calendar', element: <PartTimerCalendarPage/>},
-        {path: 'pay/:eno', element: <PayCheckPage/>},
+        {path: 'pay', element: <PayCheckPage/>},
     ]
 
 }

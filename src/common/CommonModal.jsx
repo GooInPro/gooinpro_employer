@@ -6,7 +6,6 @@ const CommonModal = ({ isOpen, msg, fn, closeModal, cancelFn }) => {
 
     // 확인 버튼 클릭 시 실행
     const confirmAction = () => {
-        fn(); // 부모에서 전달받은 함수 실행
         setIsFirstModalOpen(false); // 첫 번째 모달 닫기
         setIsSecondModalOpen(true); // 두 번째 모달 열기
     };
@@ -20,6 +19,7 @@ const CommonModal = ({ isOpen, msg, fn, closeModal, cancelFn }) => {
 
     // 두 번째 모달 닫기
     const closeModals = () => {
+        fn(); // 부모에서 전달받은 함수 실행
         setIsSecondModalOpen(false);
         closeModal(false); // 부모에게 모달 닫힘 전달
     };

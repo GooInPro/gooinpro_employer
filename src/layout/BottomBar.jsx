@@ -42,7 +42,7 @@ const BottomBar = () => {
             <nav
                 className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 bg-white border-t border-gray-200 shadow-lg transition-transform duration-300 z-[9999] w-full max-w-[30rem] ${isHidden ? 'translate-y-full' : ''}`}
             >
-                <div className="flex justify-around items-center px-4 py-3">
+                <div className="flex justify-around items-center px-0 py-3">
                     {/* 주변 공고 */}
                     <Link
                         to="/map/search"
@@ -61,8 +61,8 @@ const BottomBar = () => {
                     </Link>
                     {/* 내 직원 */}
                     <Link
-                        to="/partTimer/list/:eno"
-                        className={`flex flex-col items-center group ${isActive('/partTimer/list/:eno') ? 'text-blue-500' : 'text-gray-600'}`}
+                        to="/partTimer/list"
+                        className={`flex flex-col items-center group ${isActive('/partTimer/list') ? 'text-blue-500' : 'text-gray-600'}`}
                     >
                         <Icon icon="mdi:account-group-outline" className="text-3xl group-hover:text-blue-400 transition duration-200" />
                         <span className="text-xs mt-1 group-hover:text-blue-400 transition duration-200">내 직원</span>

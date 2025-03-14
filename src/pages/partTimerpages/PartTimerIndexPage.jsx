@@ -7,7 +7,6 @@ export const PartTimerTableColumn = [
 
 export const PartTimerTableHeader = [
     "사진", "이름", "근무지"
-
 ]
 
 export const ApplicantTableColumn = [
