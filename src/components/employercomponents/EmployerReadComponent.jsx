@@ -47,7 +47,7 @@ const EmployerDetailComponent = () => {
                 ebirth: data.data.ebirth,
             });
             setEditModalOpen(false);
-            navigate('/main/list');
+            navigate("/partTimer/calendar")
         });
     }
 
