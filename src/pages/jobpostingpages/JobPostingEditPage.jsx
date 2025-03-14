@@ -1,4 +1,3 @@
-// src/pages/jobpostingpages/JobPostingEditPage.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getJobPosting, updateJobPosting, deleteJobPosting } from "../../api/jobpostingapi/jobpostingapi";
@@ -6,11 +5,13 @@ import JobPostingRegisterComponent from "../../components/jobpostingcomponents/J
 import JobPostingPlaceComponent from "../../components/jobpostingcomponents/JobPostingPlaceComponent";
 import AddressSearchComponent from "../../common/AddressSearchComponent";
 import { geocodeAddress } from "../../api/mapapi/mapapi";
+import employerStore from "../../stores/employerStore";
+import CommonModal from "../../common/CommonModal";
 
 const JobPostingEditPage = () => {
-    // "/jobposting/edit/:jpno/:eno"로 경로 설정되어야 함
-    const { jpno, eno } = useParams();
+    const { jpno } = useParams(); // URL에서 jpno 추출
     const navigate = useNavigate();
+    const { eno } = employerStore(); // 현재 로그인한 고용주의 eno 추출
     const [loading, setLoading] = useState(true);
 
     // 모집 조건 상태 (tbl_jobPostings)
@@ -28,6 +29,7 @@ const JobPostingEditPage = () => {
 
     // 근무지 정보 상태 (tbl_workPlace)
     const [placeInfo, setPlaceInfo] = useState({
+        wpno: null,
         wroadAddress: "",
         wdetailAddress: "",
         zonecode: "",
@@ -38,16 +40,22 @@ const JobPostingEditPage = () => {
     // 주소 검색 팝업 노출 여부
     const [showAddressSearch, setShowAddressSearch] = useState(false);
 
+    // 모달 상태
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalAction, setModalAction] = useState(() => () => {}); // 모달 확인 버튼 액션
+
+    // 데이터 조회
     useEffect(() => {
         if (!jpno || !eno) {
-            console.log("파라미터 없음:", {jpno, eno});
+            console.error("필수 파라미터 누락:", { jpno, eno });
             setLoading(false);
             return;
         }
-        console.log("데이터 조회 시작:", {jpno, eno});
+        console.log("데이터 조회 시작:", { jpno, eno });
         getJobPosting(jpno, eno)
             .then((response) => {
-                console.log("조회된 데이터:", response);
+                console.log("조회된 데이터:", response.data);
                 const data = response.data;
                 setBaseInfo({
                     jpname: data.jpname,
@@ -61,7 +69,7 @@ const JobPostingEditPage = () => {
                     jpworkEndTime: data.jpworkEndTime.substring(0, 5)
                 });
                 setPlaceInfo({
-                    wpno: data.wpno,  // wpno 추가
+                    wpno: data.wpno,
                     wroadAddress: data.wroadAddress,
                     wdetailAddress: data.wdetailAddress,
                     zonecode: data.zonecode || "",
@@ -76,7 +84,6 @@ const JobPostingEditPage = () => {
                 setLoading(false);
             });
     }, [jpno, eno]);
-
 
     // 모집 조건 입력 변경 처리
     const handleBaseInfoChange = (e) => {
@@ -107,47 +114,60 @@ const JobPostingEditPage = () => {
             }));
         } catch (error) {
             console.error("Geocode API 호출 실패:", error);
-            alert("주소 좌표 변환에 실패했습니다.");
+            openModal("주소 좌표 변환에 실패했습니다.");
         }
     };
 
-    // 수정 처리: updateJobPosting 호출
+    // 모달 열기 함수
+    const openModal = (message, action = () => {}) => {
+        setModalMessage(message);
+        setModalAction(() => action); // 액션 설정
+        setShowModal(true);
+    };
+
+    // 모달 닫기 함수
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
+    // 수정 처리
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
             const payload = {
                 ...baseInfo,
+                eno, // ✅ 필수 필드 추가 (현재 로그인한 고용주 ID)
                 wpno: placeInfo.wpno,
                 wroadAddress: placeInfo.wroadAddress,
                 wdetailAddress: placeInfo.wdetailAddress
             };
 
-            console.log("[DEBUG] 수정 요청 payload:", payload);
+            console.log("[DEBUG] 최종 수정 요청 payload:", payload);
 
-            const result = await updateJobPosting(jpno, payload);
+            await updateJobPosting(jpno, payload);
 
-            console.log("[DEBUG] 수정 응답:", result); // 개발용 응답 로그
-
-            alert("구인공고가 성공적으로 수정되었습니다!");
-            navigate("/employer/jobposting/list");
+            openModal("구인공고를 수정", () =>
+                navigate("/jobposting/list")
+            ); // ✅ 모달 사용
         } catch (err) {
             console.error("[ERROR] 수정 실패 상세:", err.response?.data || err);
-            alert(`수정 실패: ${err.message}`);
+            openModal(`수정 실패: ${err.response?.data?.error || err.message}`);
         }
     };
 
-    // 삭제 처리: deleteJobPosting 호출
+    // 삭제 처리
     const handleDelete = async () => {
-        if (!window.confirm("정말 삭제하시겠습니까?")) return;
-        try {
-            const result = await deleteJobPosting(jpno, eno);
-            alert("구인공고가 삭제되었습니다.");
-            console.log("삭제 결과:", result);
-            navigate("/employer/jobposting/list");
-        } catch (err) {
-            console.error("구인공고 삭제 실패:", err);
-            alert("삭제 중 오류가 발생했습니다.");
-        }
+        openModal("정말 삭제", async () => {
+            try {
+                await deleteJobPosting(jpno, eno);
+                openModal("구인공고가 삭제되었습니다!", () =>
+                    navigate("/jobposting/list")
+                );
+            } catch (err) {
+                console.error("구인공고 삭제 실패:", err);
+                openModal("삭제 중 오류가 발생했습니다.");
+            }
+        });
     };
 
     if (loading) return <div>Loading...</div>;
@@ -156,10 +176,10 @@ const JobPostingEditPage = () => {
         <div className="p-6">
             <h2 className="text-2xl font-bold text-center mb-4">구인공고 수정</h2>
             <form onSubmit={handleUpdate} className="space-y-6">
-                {/* 재사용: 모집 조건 입력 컴포넌트 */}
+                {/* 모집 조건 입력 컴포넌트 */}
                 <JobPostingRegisterComponent data={baseInfo} onChange={handleBaseInfoChange} />
                 <hr className="border-gray-300" />
-                {/* 재사용: 근무지 정보 입력 컴포넌트 및 주소 검색 */}
+                {/* 근무지 정보 입력 컴포넌트 */}
                 <div className="space-y-4">
                     <JobPostingPlaceComponent data={placeInfo} onChange={handlePlaceInfoChange} />
                     <div className="text-center">
@@ -178,6 +198,7 @@ const JobPostingEditPage = () => {
                     )}
                 </div>
                 <hr className="border-gray-300" />
+                {/* 제출 및 삭제 버튼 */}
                 <div className="flex justify-center space-x-4">
                     <button
                         type="submit"
@@ -194,6 +215,17 @@ const JobPostingEditPage = () => {
                     </button>
                 </div>
             </form>
+
+            {/* 모달 컴포넌트 */}
+            {showModal && (
+                <CommonModal
+                    isOpen={showModal}
+                    msg={modalMessage}
+                    fn={modalAction}
+                    closeModal={closeModal}
+                    cancelFn={closeModal}
+                />
+            )}
         </div>
     );
 };
