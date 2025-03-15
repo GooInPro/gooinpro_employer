@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@capacitor/android": "^7.1.0",
+    "@capacitor/cli": "^7.1.0",
+    "@capacitor/core": "^7.1.0",
+    "@capacitor/geolocation": "^7.1.1",
+    "@capacitor/ios": "^7.1.0",
     "@iconify/react": "^5.2.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@stomp/stompjs": "^7.0.1",
@@ -31,6 +36,7 @@
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.8.1",
     "sockjs-client": "^1.6.1",
+    "vite-plugin-pwa": "^0.21.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
