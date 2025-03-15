@@ -42,19 +42,21 @@ const PartTimerCalendarComponent = () => {
                             value={date}
                             onChange={setDate}
                             className="w-full border-none"
-                            showNeighboringMonth={false} // 다른 달 날짜 보이지 않게
-                            tileClassName={({ date }) =>
-                                date.getMonth() === date.getMonth() // 현재 달만 표시
-                                    ? "relative flex items-center justify-center p-4 rounded-lg border border-blue-500 text-gray-900 bg-blue-100 shadow-md"
-                                    : "hidden" // 다른 달은 숨기기
-                            }
+                            showNeighboringMonth={false}
                             prevLabel={null}
                             nextLabel={null}
                             prev2Label={null}
                             next2Label={null}
+                            formatDay={(locale, date) => date.getDate()} // 날짜를 숫자로만 표시
                             formatShortWeekday={(locale, date) =>
-                                ["일", "월", "화", "수", "목", "금", "토"][date.getDay()] // 요일 순서 변경
+                                ["일", "월", "화", "수", "목", "금", "토"][date.getDay()]
                             }
+                            tileClassName={({ date, view }) =>
+                                view === "month"
+                                    ? "flex items-center justify-center text-sm font-semibold w-12 h-12 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-blue-100 transition"
+                                    : null
+                            }
+                            calendarType="gregory"
                         />
                     </div>
                 </Slider>
