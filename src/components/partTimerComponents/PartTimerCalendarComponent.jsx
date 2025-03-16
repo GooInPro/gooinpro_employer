@@ -1,9 +1,11 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import Calendar from "react-calendar";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
+import {getCalendarData} from "../../api/calendarapi/CalendarAPI.js";
 
 const PartTimerCalendarComponent = () => {
+
     const [date, setDate] = useState(new Date());
 
     const settings = {
@@ -12,6 +14,14 @@ const PartTimerCalendarComponent = () => {
         slidesToShow: 1,
         slidesToScroll: 1,
     };
+
+    useEffect(() => {
+
+        getCalendarData(2025, 3).then(res => {
+
+            console.log(res);
+        })
+    }, [])
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
