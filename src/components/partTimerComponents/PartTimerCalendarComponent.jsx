@@ -13,7 +13,6 @@ const PartTimerCalendarComponent = () => {
     const prevMonthRef = useRef({ year: date.getFullYear(), month: date.getMonth() });
 
     const settings = {
-
         infinite: false,
         speed: 500,
         slidesToShow: 1,
@@ -22,14 +21,16 @@ const PartTimerCalendarComponent = () => {
 
     // 날짜 변경 시 일정 데이터 가져오기
     useEffect(() => {
-
         const currentYear = date.getFullYear();
         const currentMonth = date.getMonth() + 1;
 
+        // 이전에 불러온 날짜와 동일한 날짜라면 호출하지 않도록 방지
+        if (prevMonthRef.current.month === currentMonth && prevMonthRef.current.year === currentYear) {
+            return;
+        }
+
         getCalendarData(currentYear, currentMonth).then((res) => {
-
             console.log(res);
-
             setWorkSchedule(res || []);
         });
 
@@ -38,9 +39,7 @@ const PartTimerCalendarComponent = () => {
 
     // 선택된 날짜의 일정 업데이트
     useEffect(() => {
-
         if (selectedDate) {
-
             setSelectedSchedule(getScheduleForDate(selectedDate));
         }
     }, [selectedDate, workSchedule]);
@@ -58,18 +57,15 @@ const PartTimerCalendarComponent = () => {
         return schedule ? schedule.workers : null;
     };
 
-
     // 날짜 클릭 시 선택된 날짜와 해당 일정 표시
     const handleDateClick = (date) => {
-
+        console.log(date);
         setSelectedDate(date);
     };
 
     // 이전/다음 달 변경 시 초기화
     const handleMonthChange = (newDate) => {
-
         console.log(workSchedule);
-
         setDate(newDate);
         setWorkSchedule([]);
         setSelectedDate(null);
@@ -83,7 +79,7 @@ const PartTimerCalendarComponent = () => {
                 <div className="flex justify-between items-center mb-4">
                     <button
                         className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
-                        onClick={() => handleMonthChange(new Date(date.getFullYear(), date.getMonth() - 1))}
+                        onClick={() => handleMonthChange(new Date(date.getFullYear(), date.getMonth() - 1, 1))}
                     >
                         <FaChevronLeft />
                     </button>
@@ -92,7 +88,7 @@ const PartTimerCalendarComponent = () => {
                     </h2>
                     <button
                         className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
-                        onClick={() => handleMonthChange(new Date(date.getFullYear(), date.getMonth() + 1))}
+                        onClick={() => handleMonthChange(new Date(date.getFullYear(), date.getMonth() + 1, 1))}
                     >
                         <FaChevronRight />
                     </button>
@@ -102,6 +98,7 @@ const PartTimerCalendarComponent = () => {
                 <Slider {...settings}>
                     <div>
                         <Calendar
+                            key={`${date.getFullYear()}-${date.getMonth()}`} // key를 월별로 바꿔줌
                             value={date}
                             onChange={setDate}
                             className="w-full border-none"
@@ -133,7 +130,7 @@ const PartTimerCalendarComponent = () => {
                                             {workers.length > 2 && (
                                                 <button
                                                     className="text-blue-500 text-xs font-bold mt-1"
-                                                    onClick={() => handleDateClick(date)}
+                                                    onClick={() => handleDateClick(date)} // 날짜 클릭 시 handleDateClick 호출
                                                 >
                                                     + 더 보기
                                                 </button>
@@ -144,7 +141,7 @@ const PartTimerCalendarComponent = () => {
                                 return "X";
                             }}
                             calendarType="gregory"
-                            onClickDay={handleDateClick}
+                            onClickDay={handleDateClick} // 날짜 클릭 시 handleDateClick 호출
                         />
                     </div>
                 </Slider>
