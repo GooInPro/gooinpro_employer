@@ -48,9 +48,10 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
         setSearchParams({ page: pageNum });
     };
 
-    const linkClick = (num) => {
+    const linkClick = (item) => {
+        const jpno = item.jpno; // jpno를 직접 가져옵니다.
         navigate({
-            pathname: `/${name}/read/${num}`,
+            pathname: `/${name}/read/${jpno}`,
             search: location.search,
         });
     };
@@ -109,9 +110,9 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
                 ) : data.dtoList.length > 0 ? (
                     data.dtoList.map((item) => (
                         <div
-                            key={item.id || item[column[0]]}
+                            key={item.jpno} // jpno를 key로 사용
                             className="p-4 bg-white shadow-md rounded-lg border hover:shadow-lg transition"
-                            onClick={() => linkClick(item[column[0]])}
+                            onClick={() => linkClick(item)} // 전체 item을 전달
                         >
                             {column.map((col, index) => (
                                 <div key={col} className="flex justify-between py-2">
@@ -123,7 +124,7 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
                             ))}
 
                             {/* 커스텀 액션 버튼 영역 */}
-                            {renderActions && ( // ✅ 조건부 렌더링
+                            {renderActions && (
                                 <div className="mt-4 text-right" onClick={(e) => e.stopPropagation()}>
                                     {renderActions(item)}
                                 </div>

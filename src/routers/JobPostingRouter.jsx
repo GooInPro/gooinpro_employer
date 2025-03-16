@@ -4,6 +4,7 @@ import JobPostingIndexPage from "../pages/jobpostingpages/JobPostingIndexPage.js
 const JobPostingRegisterPage = lazy(() => import("../pages/jobpostingpages/JobPostingRegisterPage.jsx"));
 const JobPostingEditPage = lazy(() => import("../pages/jobpostingpages/JobPostingEditPage.jsx"));
 const JobPostingListPage = lazy(() => import("../pages/jobpostingpages/JobPostingListPage.jsx"));
+const JobPostingReadPage = lazy(() => import("../pages/jobpostingpages/JobPostingReadPage.jsx"));
 
 const JobPostingRouter = {
     path: "/jobposting",
@@ -20,6 +21,10 @@ const JobPostingRouter = {
         {
             path: "list",
             element: <JobPostingListPage />,
+        },
+        {
+            path: "read/:jpno",
+            element: <JobPostingReadPage />,
         },
     ],
 };
