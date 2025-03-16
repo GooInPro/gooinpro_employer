@@ -53,7 +53,7 @@ const JobPostingListPage = () => {
     );
 
     return (
-        <BasicLayout>
+
             <div className="p-6">
                 {/* 헤더 영역 */}
                 <div className="flex justify-between items-center mb-6">
@@ -77,7 +77,7 @@ const JobPostingListPage = () => {
                     renderActions={renderEditButton} // ✅ 커스텀 버튼 추가
                 />
             </div>
-        </BasicLayout>
+
     );
 };
 

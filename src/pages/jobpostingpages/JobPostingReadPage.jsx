@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { getJobPosting } from "../../api/jobpostingapi/jobpostingapi";
 import employerStore from "../../stores/employerStore";
 
 const JobPostingReadPage = () => {
     const { jpno } = useParams();
     const navigate = useNavigate();
-    const { eno } = employerStore();
+    const { eno: loggedInEno } = employerStore(); // 현재 로그인한 사용자의 eno
     const [loading, setLoading] = useState(true);
     const [jobPosting, setJobPosting] = useState(null);
 
     useEffect(() => {
-        if (!jpno || !eno) {
-            console.error("필수 파라미터 누락:", { jpno, eno });
+        if (!jpno || !loggedInEno) {
+            console.error("필수 파라미터 누락:", { jpno, loggedInEno });
             setLoading(false);
             return;
         }
 
-        getJobPosting(jpno, eno)
+        getJobPosting(jpno, loggedInEno)
             .then((response) => {
                 console.log("조회된 데이터:", response.data);
                 setJobPosting(response.data);
@@ -28,7 +28,7 @@ const JobPostingReadPage = () => {
             .finally(() => {
                 setLoading(false);
             });
-    }, [jpno, eno]);
+    }, [jpno, loggedInEno]);
 
     if (loading) return <div>Loading...</div>;
     if (!jobPosting) return <div>구인공고를 찾을 수 없습니다.</div>;
@@ -70,13 +70,23 @@ const JobPostingReadPage = () => {
                     <p>{jobPosting.wroadAddress} {jobPosting.wdetailAddress}</p>
                 </div>
             </div>
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-x-4">
                 <button
                     onClick={() => navigate("/jobposting/list")}
                     className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                 >
                     목록으로 돌아가기
                 </button>
+
+                {/* 지원자 목록 보기 버튼 (조건부 렌더링) */}
+                {jobPosting.eno === loggedInEno && (
+                    <Link
+                        to={`/partTimer/applicant/list/${jpno}`}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                    >
+                        지원자 목록 보기
+                    </Link>
+                )}
             </div>
         </div>
     );
