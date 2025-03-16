@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Calendar from "react-calendar";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
@@ -7,29 +7,73 @@ import { getCalendarData } from "../../api/calendarapi/CalendarAPI.js";
 const PartTimerCalendarComponent = () => {
     const [date, setDate] = useState(new Date());
     const [workSchedule, setWorkSchedule] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedSchedule, setSelectedSchedule] = useState(null);
+
+    const prevMonthRef = useRef({ year: date.getFullYear(), month: date.getMonth() });
 
     const settings = {
+
         infinite: false,
         speed: 500,
         slidesToShow: 1,
         slidesToScroll: 1,
     };
 
+    // 날짜 변경 시 일정 데이터 가져오기
     useEffect(() => {
-        getCalendarData(2025, 3).then(res => {
 
-            setWorkSchedule(res || []); // 비어있을 경우 빈 배열로 초기화
-            console.log(workSchedule);
+        const currentYear = date.getFullYear();
+        const currentMonth = date.getMonth() + 1;
+
+        getCalendarData(currentYear, currentMonth).then((res) => {
+
+            console.log(res);
+
+            setWorkSchedule(res || []);
         });
-    }, []);
 
-    // 날짜에 해당하는 일정을 가져오는 함수
+        prevMonthRef.current = { year: currentYear, month: currentMonth };
+    }, [date]);
+
+    // 선택된 날짜의 일정 업데이트
+    useEffect(() => {
+
+        if (selectedDate) {
+
+            setSelectedSchedule(getScheduleForDate(selectedDate));
+        }
+    }, [selectedDate, workSchedule]);
+
+    // 특정 날짜의 일정을 가져오는 함수
     const getScheduleForDate = (date) => {
-        if (!workSchedule || workSchedule.length === 0) return null; // workSchedule이 비어있을 경우 null 반환
+        if (!workSchedule || workSchedule.length === 0) return null;
 
-        const formattedDate = date.toISOString().split('T')[0]; // "YYYY-MM-DD" 형식으로 날짜 변환
-        const schedule = workSchedule.find(item => item.date === formattedDate);
+        // 로컬 날짜로 포맷
+        const localDate = new Date(date);
+        const formattedDate =
+            `${localDate.getFullYear()}-${(localDate.getMonth() + 1).toString().padStart(2, '0')}-${localDate.getDate().toString().padStart(2, '0')}`;
+
+        const schedule = workSchedule.find((item) => item.date === formattedDate);
         return schedule ? schedule.workers : null;
+    };
+
+
+    // 날짜 클릭 시 선택된 날짜와 해당 일정 표시
+    const handleDateClick = (date) => {
+
+        setSelectedDate(date);
+    };
+
+    // 이전/다음 달 변경 시 초기화
+    const handleMonthChange = (newDate) => {
+
+        console.log(workSchedule);
+
+        setDate(newDate);
+        setWorkSchedule([]);
+        setSelectedDate(null);
+        setSelectedSchedule(null);
     };
 
     return (
@@ -39,7 +83,7 @@ const PartTimerCalendarComponent = () => {
                 <div className="flex justify-between items-center mb-4">
                     <button
                         className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
-                        onClick={() => setDate(new Date(date.getFullYear(), date.getMonth() - 1))}
+                        onClick={() => handleMonthChange(new Date(date.getFullYear(), date.getMonth() - 1))}
                     >
                         <FaChevronLeft />
                     </button>
@@ -48,13 +92,13 @@ const PartTimerCalendarComponent = () => {
                     </h2>
                     <button
                         className="p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition"
-                        onClick={() => setDate(new Date(date.getFullYear(), date.getMonth() + 1))}
+                        onClick={() => handleMonthChange(new Date(date.getFullYear(), date.getMonth() + 1))}
                     >
                         <FaChevronRight />
                     </button>
                 </div>
 
-                {/* Slider를 활용한 달력 */}
+                {/* 달력 */}
                 <Slider {...settings}>
                     <div>
                         <Calendar
@@ -66,35 +110,60 @@ const PartTimerCalendarComponent = () => {
                             nextLabel={null}
                             prev2Label={null}
                             next2Label={null}
-                            formatDay={(locale, date) => date.getDate()} // 날짜를 숫자로만 표시
+                            formatDay={(locale, date) => date.getDate()}
                             formatShortWeekday={(locale, date) =>
                                 ["일", "월", "화", "수", "목", "금", "토"][date.getDay()]
                             }
                             tileClassName={({ date, view }) =>
                                 view === "month"
-                                    ? "flex items-center justify-center text-sm font-semibold w-12 h-12 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-blue-100 transition"
+                                    ? "flex flex-col items-center justify-center text-sm font-medium w-16 h-16 border border-gray-300 rounded-xl shadow-lg bg-white hover:bg-blue-50 transition"
                                     : null
                             }
                             tileContent={({ date, view }) => {
-                                // 해당 날짜에 일하는 사람이 있으면 해당 날짜에 일정 표시
                                 const workers = getScheduleForDate(date);
                                 if (workers) {
+                                    const displayedWorkers = workers.slice(0, 2); // 최대 2개만 표시
                                     return (
-                                        <div className="text-xs text-center">
-                                            {workers.map((worker, index) => (
-                                                <div key={index} className="text-blue-600">
-                                                    {worker.pname} ({worker.jmworkstartTime} - {worker.jmworkendTime})
+                                        <div className="text-xs text-center mt-1 space-y-1">
+                                            {displayedWorkers.map((worker, index) => (
+                                                <div key={index} className="text-gray-600 font-semibold">
+                                                    {worker.pname}
                                                 </div>
                                             ))}
+                                            {workers.length > 2 && (
+                                                <button
+                                                    className="text-blue-500 text-xs font-bold mt-1"
+                                                    onClick={() => handleDateClick(date)}
+                                                >
+                                                    + 더 보기
+                                                </button>
+                                            )}
                                         </div>
                                     );
                                 }
-                                return null;
+                                return "X";
                             }}
                             calendarType="gregory"
+                            onClickDay={handleDateClick}
                         />
                     </div>
                 </Slider>
+
+                {/* 선택된 날짜의 일정 상세보기 */}
+                {selectedDate && selectedSchedule && (
+                    <div className="mt-6 p-4 bg-gray-100 rounded-lg shadow-sm">
+                        <h3 className="text-lg font-semibold text-blue-600">
+                            {selectedDate.toLocaleDateString("ko-KR")}
+                        </h3>
+                        <ul className="mt-2 space-y-2">
+                            {selectedSchedule.map((worker, index) => (
+                                <li key={index} className="text-gray-700">
+                                    {worker.pname} - {worker.jmworkstartTime} : {worker.jmworkendTime}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         </div>
     );
