@@ -56,17 +56,24 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
     };
 
     const renderCell = (col, value) => {
+        if (col === "pifilename") {
+            return (
+                <img
+                    src={value ? `http://localhost/profile/${value}` : "/public/default_image.png"}
+                    alt="프로필 사진"
+                    className="w-10 h-10 rounded-full object-cover"
+                />
+            );
+        }
         if (col === "qstatus" || col === "castatus" || col === "cpstatus") {
             return (
                 <span
                     className={`px-2 py-1 rounded-lg text-xs font-bold ${
-                        value
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
+                        value ? "bg-green-500 text-white" : "bg-red-500 text-white"
                     }`}
                 >
-                    {value ? "답변완료" : "답변대기"}
-                </span>
+                {value ? "답변완료" : "답변대기"}
+            </span>
             );
         }
         if (col.endsWith("date") || col.endsWith("birth")) {
@@ -77,6 +84,7 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
         }
         return value || "-";
     };
+
 
     useEffect(() => {
         const pageQuery = searchParams.get("page") || 1;
