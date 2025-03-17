@@ -14,6 +14,9 @@ const JobPostingEditPage = () => {
     const { eno } = employerStore(); // 현재 로그인한 고용주의 eno 추출
     const [loading, setLoading] = useState(true);
 
+    const [images, setImages] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+
     // 모집 조건 상태 (tbl_jobPostings)
     const [baseInfo, setBaseInfo] = useState({
         jpname: "",
@@ -155,33 +158,76 @@ const JobPostingEditPage = () => {
         }
     };
 
-    // 삭제 처리
-    const handleDelete = async () => {
-        openModal("정말 삭제", async () => {
-            try {
-                await deleteJobPosting(jpno, eno);
-                openModal("구인공고가 삭제되었습니다!", () =>
-                    navigate("/jobposting/list")
-                );
-            } catch (err) {
-                console.error("구인공고 삭제 실패:", err);
-                openModal("삭제 중 오류가 발생했습니다.");
-            }
-        });
+    // 이미지 업로드 핸들러
+    const handleImageUpload = async () => {
+        if (selectedFiles.length === 0) return;
+
+        try {
+            const newFilenames = await uploadFile({
+                files: selectedFiles,
+                uploadUrl: 'http://upload-api/upload/jobPosting'
+            });
+            setImages([...images, ...newFilenames]);
+            setSelectedFiles([]);
+        } catch (error) {
+            alert('이미지 업로드 실패');
+        }
     };
+
+// 이미지 삭제 핸들러
+    const handleRemoveImage = (index) => {
+        setImages(images.filter((_, i) => i !== index));
+    };
+
 
     if (loading) return <div>Loading...</div>;
 
     return (
         <div className="p-6">
             <h2 className="text-2xl font-bold text-center mb-4">구인공고 수정</h2>
+
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-2">공고 이미지 관리</h3>
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                    {images.map((filename, index) => (
+                        <div key={index} className="relative group">
+                            <img
+                                src={`http://localhost/jobPosting/${filename}`}
+                                alt={`이미지 ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg border"
+                            />
+                            <button
+                                onClick={() => handleRemoveImage(index)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <div className="flex gap-4">
+                    <input
+                        type="file"
+                        multiple
+                        onChange={(e) => setSelectedFiles(Array.from(e.target.files))}
+                        className="border p-2 rounded"
+                    />
+                    <button
+                        onClick={handleImageUpload}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        이미지 추가
+                    </button>
+                </div>
+            </div>
+
             <form onSubmit={handleUpdate} className="space-y-6">
                 {/* 모집 조건 입력 컴포넌트 */}
-                <JobPostingRegisterComponent data={baseInfo} onChange={handleBaseInfoChange} />
-                <hr className="border-gray-300" />
+                <JobPostingRegisterComponent data={baseInfo} onChange={handleBaseInfoChange}/>
+                <hr className="border-gray-300"/>
                 {/* 근무지 정보 입력 컴포넌트 */}
                 <div className="space-y-4">
-                    <JobPostingPlaceComponent data={placeInfo} onChange={handlePlaceInfoChange} />
+                    <JobPostingPlaceComponent data={placeInfo} onChange={handlePlaceInfoChange}/>
                     <div className="text-center">
                         <button
                             type="button"
@@ -193,11 +239,11 @@ const JobPostingEditPage = () => {
                     </div>
                     {showAddressSearch && (
                         <div className="mt-4">
-                            <AddressSearchComponent onComplete={handleAddressComplete} />
+                            <AddressSearchComponent onComplete={handleAddressComplete}/>
                         </div>
                     )}
                 </div>
-                <hr className="border-gray-300" />
+                <hr className="border-gray-300"/>
                 {/* 제출 및 삭제 버튼 */}
                 <div className="flex justify-center space-x-4">
                     <button

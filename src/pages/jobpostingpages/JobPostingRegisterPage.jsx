@@ -7,7 +7,7 @@ import JobPostingPlaceComponent from "../../components/jobpostingcomponents/JobP
 import AddressSearchComponent from "../../common/AddressSearchComponent";
 import employerStore from "../../stores/employerStore";
 import CommonModal from "../../common/CommonModal";
-import { uploadImages } from "../../api/jobpostingapi/jobpostingapi";
+import { uploadFile } from "../../util/fileUploadUtil";
 
 const JobPostingRegisterPage = () => {
     const { eno } = employerStore();
@@ -70,25 +70,29 @@ const JobPostingRegisterPage = () => {
 
     const processRegister = async () => {
         try {
+            // 이미지 업로드
+            let imageFilenames = [];
+            if (selectedFiles.length > 0) {
+                const baseUrl = import.meta.env.VITE_API_UPLOAD_LOCAL_HOST;
+                const uploadUrl = new URL('/upload/api/jobPosting', baseUrl).toString();
+                imageFilenames = await uploadFile({
+                    files: selectedFiles,
+                    uploadUrl: uploadUrl
+                });
+            }
+
+            // 구인공고 등록 요청
             const response = await registerJobPosting({
                 eno,
                 ...baseInfo,
-                ...placeInfo
+                ...placeInfo,
+                jpifilenames: imageFilenames
             });
-
-            if (selectedFiles.length > 0 && response.data.jpno) {
-                const uploadResponse = await uploadImages(
-                    selectedFiles,
-                    response.data.jpno,
-                    eno
-                );
-                console.log('이미지 업로드 결과:', uploadResponse);
-            }
 
             navigate("/jobposting/list");
         } catch (error) {
-            console.error("Error:", error);
-            alert(error.response?.data?.error || "처리 중 오류 발생");
+            console.error("등록 실패:", error);
+            alert(error.response?.data?.error || "등록 실패");
         }
     };
 

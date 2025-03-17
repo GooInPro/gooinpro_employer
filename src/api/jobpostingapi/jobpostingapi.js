@@ -13,7 +13,6 @@ export const registerJobPosting = async (payload) => {
     }
 };
 
-// 추후 수정, 삭제, 목록 조회 등 다른 함수들도 아래와 같이 작성 가능
 export const updateJobPosting = async (jpno, payload) => {
     try {
         const res = await axios.put(`${host}/edit/${jpno}`, payload);
