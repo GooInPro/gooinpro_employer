@@ -25,7 +25,9 @@ export const updateJobPosting = async (jpno, payload) => {
 
 export const deleteJobPosting = async (jpno, eno) => {
     try {
-        const res = await axios.put(`${host}/delete/${jpno}`, { eno });
+        const res = await axios.delete(`${host}/${jpno}`, {
+            data: { eno } // ✅ `data` 속성 사용
+        });
         return res.data;
     } catch (error) {
         throw error;

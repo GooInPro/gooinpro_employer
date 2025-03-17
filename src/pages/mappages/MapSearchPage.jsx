@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import employerStore from '../../stores/employerStore';
 import { getAllWorkplaces, geocodeAddress } from '../../api/mapapi/mapapi';
+import { listJobPostings } from '../../api/jobpostingapi/jobpostingapi';
 import CommonTableComponent from '../../common/CommonTableComponent';
 
 const MapSearchPage = () => {
@@ -12,42 +13,26 @@ const MapSearchPage = () => {
     const [myWorkplaceInfo, setMyWorkplaceInfo] = useState([]);
     const [otherWorkplaces, setOtherWorkplaces] = useState([]);
 
-    // 테이블 헤더와 컬럼 정의
-    const tableHeader = ["공고명", "근무지 주소", "시급", "마감일"];
-    const column = ["wpno", "jpname", "wroadAddress", "jphourlyRate", "jpenddate"];
+    const tableHeader = ["공고 명", "공고 상세", "주소", "시급", "모집 기간"];
+    const column = ["jpname", "jpcontent", "WorkPlace.wroadAddress", "jphourlyRate", "jpminDuration"];
 
-    // 리스트 조회 함수
-    const getWorkplaceList = async (page) => {
+    const getJobPostingList = async (page) => {
         try {
-            const data = await getAllWorkplaces();
-            console.log("[DEBUG] table.... getWorkplaceList raw data:", data);
+            const response = await listJobPostings(eno);
+            const data = response.data || [];
 
-            // 페이지당 10개씩 표시
+            // 페이지네이션 로직
             const itemsPerPage = 10;
             const totalItems = data.length;
             const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-            // 현재 페이지의 데이터만 슬라이싱
             const startIndex = (page - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
             const paginatedData = data.slice(startIndex, endIndex);
 
-            console.log("[DEBUG] table.... Paginated data:", paginatedData);
-            console.log("[DEBUG] table.... Column data available:", paginatedData.map(item => ({
-                jpname: item.jpname,
-                wroadAddress: item.wroadAddress,
-                jphourlyRate: item.jphourlyRate,
-                jpregdate: item.jpregdate,
-                jpenddate: item.jpenddate
-            })));  // 각 필드의 실제 데이터 확인
-
-            // 페이지 번호 배열 생성
-            const pageNumList = Array.from({length: totalPages}, (_, i) => i + 1);
-
             return {
                 dtoList: paginatedData,
                 totalPage: totalPages,
-                pageNumList: pageNumList,
+                pageNumList: Array.from({ length: totalPages }, (_, i) => i + 1),
                 current: parseInt(page),
                 next: page < totalPages,
                 prev: page > 1,
@@ -55,7 +40,7 @@ const MapSearchPage = () => {
                 prevPage: page > 1 ? parseInt(page) - 1 : null
             };
         } catch (error) {
-            console.error("[DEBUG] 근무지 목록 조회 실패:", error);
+            console.error("[ERROR] 구인공고 목록 조회 실패:", error);
             return {
                 dtoList: [],
                 totalPage: 0,
@@ -69,70 +54,58 @@ const MapSearchPage = () => {
         }
     };
 
-    // 로그인 사용자의 모든 근무지 정보 가져오기
     useEffect(() => {
-        if (!eno) {
-            console.log('[DEBUG] eno is not set');
-            return;
-        }
+        if (!eno) return;
 
         getAllWorkplaces()
             .then(async (data) => {
-                // 로그인한 사용자의 근무지만 필터링
                 const myWorkplaces = data.filter(wp => wp.eno === eno);
-                console.log('[DEBUG] My workplaces:', myWorkplaces);
-
-                // 각 근무지의 좌표 변환
-                const myWorkplacesWithCoords = await Promise.all(
+                const workplacesWithCoords = await Promise.all(
                     myWorkplaces.map(async (wp) => {
                         try {
                             const coords = await geocodeAddress(wp.wroadAddress);
                             return { ...wp, lat: coords.lat, lng: coords.lng };
-                        } catch (e) {
+                        } catch {
                             return null;
                         }
                     })
                 );
 
-                // null이 아닌 결과만 필터링
-                const validWorkplaces = myWorkplacesWithCoords.filter(wp => wp !== null);
+                const validWorkplaces = workplacesWithCoords.filter(Boolean);
 
-                // 가장 최근 근무지(wpno가 가장 큰)의 좌표를 지도 중심으로 설정
                 if (validWorkplaces.length > 0) {
-                    const latestWorkplace = validWorkplaces.reduce((prev, current) =>
-                        (prev.wpno > current.wpno) ? prev : current
-                    );
-                    setWorkplaceCenter({ lat: latestWorkplace.lat, lng: latestWorkplace.lng });
+                    const latest = validWorkplaces.reduce((a, b) => a.wpno > b.wpno ? a : b);
+                    setWorkplaceCenter({ lat: latest.lat, lng: latest.lng });
+                } else {
+                    setWorkplaceCenter({ lat: 35.1795543, lng: 129.0756416 });
                 }
 
                 setMyWorkplaceInfo(validWorkplaces);
             })
             .catch(err => {
-                console.error('[DEBUG] API 호출 실패:', err);
+                console.error('[ERROR] 근무지 정보 조회 실패:', err);
             });
-    }, [eno, navigate]);
+    }, [eno]);
 
-    // 다른 사용자들의 근무지 정보 가져오기
     useEffect(() => {
         getAllWorkplaces()
             .then(async (data) => {
-                // 다른 사용자의 근무지만 필터링
                 const otherWorkplaces = data.filter(wp => wp.eno !== eno);
-
                 const workplacesWithCoords = await Promise.all(
                     otherWorkplaces.map(async (wp) => {
                         try {
                             const coords = await geocodeAddress(wp.wroadAddress);
                             return { ...wp, lat: coords.lat, lng: coords.lng };
-                        } catch (e) {
+                        } catch {
                             return null;
                         }
                     })
                 );
-                setOtherWorkplaces(workplacesWithCoords.filter(wp => wp !== null));
+
+                setOtherWorkplaces(workplacesWithCoords.filter(Boolean));
             })
             .catch(err => {
-                console.error("[DEBUG] 전체 근무지 조회 실패:", err);
+                console.error("[ERROR] 전체 근무지 조회 실패:", err);
             });
     }, [eno]);
 
@@ -141,26 +114,20 @@ const MapSearchPage = () => {
             <div className="h-1/2">
                 <MapDiv style={{ width: '100%', height: '100%' }}>
                     {workplaceCenter ? (
-                        <NaverMap
-                            defaultCenter={workplaceCenter}
-                            defaultZoom={14}
-                        >
-                            {/* 로그인 사용자의 마커들 (파란색) */}
-                            {myWorkplaceInfo.map((wp, idx) => (
+                        <NaverMap defaultCenter={workplaceCenter} defaultZoom={14}>
+                            {myWorkplaceInfo.map((wp) => (
                                 <Marker
-                                    key={`my-${idx}`}
+                                    key={`my-${wp.wpno}`}
                                     position={{ lat: wp.lat, lng: wp.lng }}
-                                    title={`내 근무지: ${wp.wdetailAddress} - ${wp.wroadAddress}`}
+                                    title={`${wp.wdetailAddress} - ${wp.wroadAddress}`}
                                     icon={{
                                         content: '<div style="background-color: #0066FF; width: 15px; height: 15px; border-radius: 50%;"></div>'
                                     }}
                                 />
                             ))}
-
-                            {/* 다른 사용자들의 마커 (초록색) */}
-                            {otherWorkplaces.map((wp, idx) => (
+                            {otherWorkplaces.map((wp) => (
                                 <Marker
-                                    key={`other-${idx}`}
+                                    key={`other-${wp.wpno}`}
                                     position={{ lat: wp.lat, lng: wp.lng }}
                                     title={`${wp.wdetailAddress} - ${wp.wroadAddress}`}
                                     icon={{
@@ -170,16 +137,17 @@ const MapSearchPage = () => {
                             ))}
                         </NaverMap>
                     ) : (
-                        <div>Loading...</div>
+                        <div>지도 로딩 중...</div>
                     )}
                 </MapDiv>
             </div>
+
             <div className="h-1/3 overflow-auto">
                 <CommonTableComponent
-                    name="workplace"
+                    name="jobposting"
                     tableHeader={tableHeader}
                     column={column}
-                    listFn={getWorkplaceList}
+                    listFn={getJobPostingList}
                 />
             </div>
         </div>

@@ -35,7 +35,7 @@ const getFormattedArray = (value) => {
     return value || "-";
 };
 
-function CommonTableComponent({ name, tableHeader, column, listFn }) {
+function CommonTableComponent({ name, tableHeader, column, listFn, renderActions }) {
     const [data, setData] = useState(init);
     const [loading, setLoading] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -48,21 +48,32 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
         setSearchParams({ page: pageNum });
     };
 
-    const linkClick = (num) => {
+    const linkClick = (item) => {
+        const jpno = item.jpno; // jpno를 직접 가져옵니다.
         navigate({
-            pathname: `/${name}/read/${num}`,
+            pathname: `/${name}/read/${jpno}`,
             search: location.search,
         });
     };
 
-    const renderCell = (col, value) => {
+    const renderCell = (col, value, item) => {
+        // 중첩 객체 처리 (예: WorkPlace.wroadAddress)
+        if (col.includes('.')) {
+            const keys = col.split('.');
+            let result = item;
+            for (const key of keys) {
+                result = result?.[key] || null;
+                if (!result) break;
+            }
+            return result || "-";
+        }
+
+        // 기존 렌더링 로직 유지
         if (col === "qstatus" || col === "castatus" || col === "cpstatus") {
             return (
                 <span
                     className={`px-2 py-1 rounded-lg text-xs font-bold ${
-                        value
-                            ? "bg-green-500 text-white"
-                            : "bg-red-500 text-white"
+                        value ? "bg-green-500 text-white" : "bg-red-500 text-white"
                     }`}
                 >
                     {value ? "답변완료" : "답변대기"}
@@ -99,18 +110,25 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
                 ) : data.dtoList.length > 0 ? (
                     data.dtoList.map((item) => (
                         <div
-                            key={item.id || item[column[0]]}
+                            key={item.jpno} // jpno를 key로 사용
                             className="p-4 bg-white shadow-md rounded-lg border hover:shadow-lg transition"
-                            onClick={() => linkClick(item[column[0]])}
+                            onClick={() => linkClick(item)} // 전체 item을 전달
                         >
-                            {column.slice(1).map((col, index) => (
+                            {column.map((col, index) => (
                                 <div key={col} className="flex justify-between py-2">
                                     <span className="font-semibold text-blue-500">
-                                        {tableHeader[index]} {/* header 배열에서 전체 항목 사용 */}
+                                        {tableHeader[index]}
                                     </span>
-                                    <span>{renderCell(col, item[col])}</span>
+                                    <span>{renderCell(col, item[col], item)}</span>
                                 </div>
                             ))}
+
+                            {/* 커스텀 액션 버튼 영역 */}
+                            {renderActions && (
+                                <div className="mt-4 text-right" onClick={(e) => e.stopPropagation()}>
+                                    {renderActions(item)}
+                                </div>
+                            )}
                         </div>
                     ))
                 ) : (
