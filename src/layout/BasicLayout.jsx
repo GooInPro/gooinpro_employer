@@ -8,10 +8,10 @@ function BasicLayout({ children }) {
     return (
         <div className="flex flex-col h-screen w-screen max-w-full bg-white">
             <Header />
-            <div className="flex-1 overflow-auto px-0">
+            <div className="flex-1 overflow-auto px-0 pb-16">
                 {children}
             </div>
-            <BottomBar />
+            <BottomBar/>
         </div>
     );
 }
