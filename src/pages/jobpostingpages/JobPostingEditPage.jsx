@@ -62,6 +62,7 @@ const JobPostingEditPage = () => {
         }
         getJobPosting(jpno, eno)
             .then((response) => {
+                console.log("조회된 데이터:", response.data);
                 const data = response.data;
                 setBaseInfo({
                     jpname: data.jpname,
@@ -136,24 +137,30 @@ const JobPostingEditPage = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            let imageFilenames = images;
+            let imageFilenames = images; // ✅ 기존 이미지 유지
+
+            // 1. 새 이미지 업로드 (등록 페이지와 동일한 로직)
             if (selectedFiles.length > 0) {
+                const baseUrl = import.meta.env.VITE_API_UPLOAD_LOCAL_HOST;
+                const uploadUrl = new URL('/upload/api/jobPosting', baseUrl).toString();
                 const newFilenames = await uploadFile({
                     files: selectedFiles,
-                    uploadUrl: import.meta.env.VITE_IMAGE_UPLOAD_URL // ✅ 환경 변수 사용
+                    uploadUrl: uploadUrl // ✅ 등록 페이지와 동일한 URL 생성 방식
                 });
                 imageFilenames = [...images, ...newFilenames];
             }
 
+            // 2. 수정 요청 데이터 구성 (기존 로직 유지)
             const payload = {
                 ...baseInfo,
                 eno,
                 wpno: placeInfo.wpno,
                 wroadAddress: placeInfo.wroadAddress,
                 wdetailAddress: placeInfo.wdetailAddress,
-                jpifilenames: imageFilenames // ✅ 이미지 파일명 포함
+                jpifilenames: imageFilenames
             };
 
+            console.log("[DEBUG] 최종 수정 페이로드:", payload);
             await updateJobPosting(jpno, payload);
             openModal("구인공고가 수정되었습니다.", () => navigate("/jobposting/list"));
         } catch (err) {
