@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import employerStore from '../../stores/employerStore';
 import { getAllWorkplaces, geocodeAddress } from '../../api/mapapi/mapapi';
 import { listJobPostings } from '../../api/jobpostingapi/jobpostingapi';
-import CommonTableComponent from '../../common/CommonTableComponent';
+import JobPostingTableComponent from "../../components/jobpostingcomponents/JobPostingTableComponent.jsx";
 
 const MapSearchPage = () => {
     const navigate = useNavigate();
@@ -12,7 +12,6 @@ const MapSearchPage = () => {
     const [workplaceCenter, setWorkplaceCenter] = useState(null);
     const [myWorkplaceInfo, setMyWorkplaceInfo] = useState([]);
     const [otherWorkplaces, setOtherWorkplaces] = useState([]);
-
     const tableHeader = ["공고 명", "공고 상세", "주소", "시급", "모집 기간"];
     const column = ["jpname", "jpcontent", "WorkPlace.wroadAddress", "jphourlyRate", "jpminDuration"];
 
@@ -143,7 +142,7 @@ const MapSearchPage = () => {
             </div>
 
             <div className="h-1/3 overflow-auto">
-                <CommonTableComponent
+                <JobPostingTableComponent
                     name="jobposting"
                     tableHeader={tableHeader}
                     column={column}

@@ -7,7 +7,7 @@ import JobPostingPlaceComponent from "../../components/jobpostingcomponents/JobP
 import AddressSearchComponent from "../../common/AddressSearchComponent";
 import employerStore from "../../stores/employerStore";
 import CommonModal from "../../common/CommonModal";
-import { uploadImages } from "../../api/jobpostingapi/jobpostingapi";
+import { uploadFile } from "../../util/fileUploadUtil";
 
 const JobPostingRegisterPage = () => {
     const { eno } = employerStore();
@@ -15,6 +15,8 @@ const JobPostingRegisterPage = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [fileError, setFileError] = useState("");
+
 
     const [baseInfo, setBaseInfo] = useState({
         jpname: "",
@@ -64,31 +66,33 @@ const JobPostingRegisterPage = () => {
             }));
         } catch (error) {
             console.error("Geocode API 호출 실패:", error);
-            alert("주소 좌표 변환에 실패했습니다.");
         }
     };
 
     const processRegister = async () => {
         try {
+            // 이미지 업로드
+            let imageFilenames = [];
+            if (selectedFiles.length > 0) {
+                const baseUrl = import.meta.env.VITE_API_UPLOAD_LOCAL_HOST;
+                const uploadUrl = new URL('/upload/api/jobPosting', baseUrl).toString();
+                imageFilenames = await uploadFile({
+                    files: selectedFiles,
+                    uploadUrl: uploadUrl
+                });
+            }
+
+            // 구인공고 등록 요청
             const response = await registerJobPosting({
                 eno,
                 ...baseInfo,
-                ...placeInfo
+                ...placeInfo,
+                jpifilenames: imageFilenames
             });
-
-            if (selectedFiles.length > 0 && response.data.jpno) {
-                const uploadResponse = await uploadImages(
-                    selectedFiles,
-                    response.data.jpno,
-                    eno
-                );
-                console.log('이미지 업로드 결과:', uploadResponse);
-            }
 
             navigate("/jobposting/list");
         } catch (error) {
-            console.error("Error:", error);
-            alert(error.response?.data?.error || "처리 중 오류 발생");
+            console.error("등록 실패:", error);
         }
     };
 
@@ -104,9 +108,10 @@ const JobPostingRegisterPage = () => {
     const handleFileSelect = (e) => {
         const files = Array.from(e.target.files);
         if (files.length > 5) {
-            alert('최대 5개까지 업로드 가능합니다.');
+            setFileError("최대 5개까지 업로드 가능합니다.");
             setSelectedFiles(files.slice(0, 5));
         } else {
+            setFileError("");
             setSelectedFiles(files);
         }
     };

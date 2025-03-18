@@ -35,6 +35,21 @@ const JobPostingReadPage = () => {
 
     return (
         <div className="p-6">
+
+            <div className="mt-6">
+                <h3 className="text-lg font-semibold mb-4">공고 이미지</h3>
+                <div className="grid grid-cols-3 gap-4">
+                    {jobPosting.jpifilenames?.map((filename, index) => (
+                        <img
+                            key={index}
+                            src={`http://localhost/jobPosting/${filename}`}
+                            alt={`공고 이미지 ${index + 1}`}
+                            className="w-full h-32 object-cover rounded-lg border"
+                        />
+                    ))}
+                </div>
+            </div>
+
             <h2 className="text-2xl font-bold text-center mb-4">구인공고 상세</h2>
             <div className="space-y-4">
                 <div>
@@ -59,11 +74,15 @@ const JobPostingReadPage = () => {
                 </div>
                 <div>
                     <h3 className="font-semibold">근무 기간</h3>
-                    <p>{jobPosting.jpminDuration}개월 ~ {jobPosting.jpmaxDuration ? `${jobPosting.jpmaxDuration}개월` : '무기한'}</p>
+                    <p>{jobPosting.jpminDuration}개월
+                        ~ {jobPosting.jpmaxDuration ? `${jobPosting.jpmaxDuration}개월` : '무기한'}</p>
                 </div>
                 <div>
                     <h3 className="font-semibold">근무 시간</h3>
-                    <p>{jobPosting.jpworkStartTime.substring(0, 5)} ~ {jobPosting.jpworkEndTime.substring(0, 5)}</p>
+                    <p>
+                        {jobPosting.jpworkStartTime?.substring(0, 5) ?? '00:00'} ~
+                        {jobPosting.jpworkEndTime?.substring(0, 5) ?? '00:00'}
+                    </p>
                 </div>
                 <div>
                     <h3 className="font-semibold">근무지 주소</h3>

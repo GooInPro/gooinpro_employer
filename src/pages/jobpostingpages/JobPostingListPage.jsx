@@ -3,7 +3,7 @@ import { listJobPostings } from "../../api/jobpostingapi/jobpostingapi";
 import employerStore from "../../stores/employerStore";
 import { Link, useNavigate } from "react-router-dom";
 import BasicLayout from "../../layout/BasicLayout";
-import CommonTableComponent from "../../common/CommonTableComponent";
+import JobPostingTableComponent from "../../components/jobpostingcomponents/JobPostingTableComponent.jsx";
 
 const JobPostingListPage = () => {
     const { eno, ename } = employerStore();
@@ -69,7 +69,7 @@ const JobPostingListPage = () => {
                 <h3 className="text-2xl font-semibold mb-4">구인공고 목록</h3>
 
                 {/* CommonTableComponent 사용 */}
-                <CommonTableComponent
+                <JobPostingTableComponent
                     name="jobposting"
                     tableHeader={tableHeader}
                     column={column}
