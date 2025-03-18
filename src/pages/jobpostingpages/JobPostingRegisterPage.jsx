@@ -15,6 +15,8 @@ const JobPostingRegisterPage = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [fileError, setFileError] = useState("");
+
 
     const [baseInfo, setBaseInfo] = useState({
         jpname: "",
@@ -64,7 +66,6 @@ const JobPostingRegisterPage = () => {
             }));
         } catch (error) {
             console.error("Geocode API 호출 실패:", error);
-            alert("주소 좌표 변환에 실패했습니다.");
         }
     };
 
@@ -92,7 +93,6 @@ const JobPostingRegisterPage = () => {
             navigate("/jobposting/list");
         } catch (error) {
             console.error("등록 실패:", error);
-            alert(error.response?.data?.error || "등록 실패");
         }
     };
 
@@ -108,9 +108,10 @@ const JobPostingRegisterPage = () => {
     const handleFileSelect = (e) => {
         const files = Array.from(e.target.files);
         if (files.length > 5) {
-            alert('최대 5개까지 업로드 가능합니다.');
+            setFileError("최대 5개까지 업로드 가능합니다.");
             setSelectedFiles(files.slice(0, 5));
         } else {
+            setFileError("");
             setSelectedFiles(files);
         }
     };
