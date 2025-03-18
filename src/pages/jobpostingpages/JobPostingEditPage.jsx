@@ -7,14 +7,18 @@ import AddressSearchComponent from "../../common/AddressSearchComponent";
 import { geocodeAddress } from "../../api/mapapi/mapapi";
 import employerStore from "../../stores/employerStore";
 import CommonModal from "../../common/CommonModal";
+import { uploadFile } from "../../util/fileUploadUtil"; // ✅ 추가: uploadFile 임포트
 
 const JobPostingEditPage = () => {
-    const { jpno } = useParams(); // URL에서 jpno 추출
+    const { jpno } = useParams();
     const navigate = useNavigate();
-    const { eno } = employerStore(); // 현재 로그인한 고용주의 eno 추출
+    const { eno } = employerStore();
     const [loading, setLoading] = useState(true);
 
-    // 모집 조건 상태 (tbl_jobPostings)
+    const [images, setImages] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [fileError, setFileError] = useState("");
+
     const [baseInfo, setBaseInfo] = useState({
         jpname: "",
         jpcontent: "",
@@ -27,7 +31,6 @@ const JobPostingEditPage = () => {
         jpworkEndTime: ""
     });
 
-    // 근무지 정보 상태 (tbl_workPlace)
     const [placeInfo, setPlaceInfo] = useState({
         wpno: null,
         wroadAddress: "",
@@ -37,25 +40,28 @@ const JobPostingEditPage = () => {
         longitude: null
     });
 
-    // 주소 검색 팝업 노출 여부
     const [showAddressSearch, setShowAddressSearch] = useState(false);
-
-    // 모달 상태
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
-    const [modalAction, setModalAction] = useState(() => () => {}); // 모달 확인 버튼 액션
+    const [modalAction, setModalAction] = useState(() => () => {});
 
-    // 데이터 조회
+    const handleDelete = async () => {
+        try {
+            await deleteJobPosting(jpno, eno);
+            openModal("구인공고가 삭제되었습니다.", () => navigate("/jobposting/list"));
+        } catch (error) {
+            openModal("삭제 실패: " + error.message);
+        }
+    };
+
     useEffect(() => {
         if (!jpno || !eno) {
             console.error("필수 파라미터 누락:", { jpno, eno });
             setLoading(false);
             return;
         }
-        console.log("데이터 조회 시작:", { jpno, eno });
         getJobPosting(jpno, eno)
             .then((response) => {
-                console.log("조회된 데이터:", response.data);
                 const data = response.data;
                 setBaseInfo({
                     jpname: data.jpname,
@@ -65,39 +71,38 @@ const JobPostingEditPage = () => {
                     jpworkDays: data.jpworkDays,
                     jpminDuration: data.jpminDuration,
                     jpmaxDuration: data.jpmaxDuration,
-                    jpworkStartTime: data.jpworkStartTime.substring(0, 5),
-                    jpworkEndTime: data.jpworkEndTime.substring(0, 5)
+                    jpworkStartTime: (data.jpworkStartTime || "").substring(0, 5),
+                    jpworkEndTime: (data.jpworkEndTime || "").substring(0, 5)
                 });
                 setPlaceInfo({
-                    wpno: data.wpno,
-                    wroadAddress: data.wroadAddress,
-                    wdetailAddress: data.wdetailAddress,
-                    zonecode: data.zonecode || "",
-                    latitude: data.wlati || null,
-                    longitude: data.wlong || null
+                    wpno: data.WorkPlace.wpno,
+                    wroadAddress: data.WorkPlace.wroadAddress,
+                    wdetailAddress: data.WorkPlace.wdetailAddress,
+                    zonecode: data.WorkPlace.zonecode || "",
+                    latitude: data.WorkPlace.wlati || null,
+                    longitude: data.WorkPlace.wlong || null
                 });
+                setImages(data.jpifilenames || []); // ✅ 기존 이미지 설정
             })
             .catch((err) => {
                 console.error("조회 실패:", err);
+                openModal("데이터 조회에 실패했습니다.");
             })
             .finally(() => {
                 setLoading(false);
             });
     }, [jpno, eno]);
 
-    // 모집 조건 입력 변경 처리
     const handleBaseInfoChange = (e) => {
         const { name, value } = e.target;
         setBaseInfo((prev) => ({ ...prev, [name]: value }));
     };
 
-    // 근무지 정보 입력 변경 처리
     const handlePlaceInfoChange = (e) => {
         const { name, value } = e.target;
         setPlaceInfo((prev) => ({ ...prev, [name]: value }));
     };
 
-    // 주소 검색 완료 후 콜백 처리
     const handleAddressComplete = async (data) => {
         setPlaceInfo((prev) => ({
             ...prev,
@@ -118,56 +123,57 @@ const JobPostingEditPage = () => {
         }
     };
 
-    // 모달 열기 함수
     const openModal = (message, action = () => {}) => {
         setModalMessage(message);
-        setModalAction(() => action); // 액션 설정
+        setModalAction(() => action);
         setShowModal(true);
     };
 
-    // 모달 닫기 함수
     const closeModal = () => {
         setShowModal(false);
     };
 
-    // 수정 처리
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
+            let imageFilenames = images;
+            if (selectedFiles.length > 0) {
+                const newFilenames = await uploadFile({
+                    files: selectedFiles,
+                    uploadUrl: import.meta.env.VITE_IMAGE_UPLOAD_URL // ✅ 환경 변수 사용
+                });
+                imageFilenames = [...images, ...newFilenames];
+            }
+
             const payload = {
                 ...baseInfo,
-                eno, // ✅ 필수 필드 추가 (현재 로그인한 고용주 ID)
+                eno,
                 wpno: placeInfo.wpno,
                 wroadAddress: placeInfo.wroadAddress,
-                wdetailAddress: placeInfo.wdetailAddress
+                wdetailAddress: placeInfo.wdetailAddress,
+                jpifilenames: imageFilenames // ✅ 이미지 파일명 포함
             };
 
-            console.log("[DEBUG] 최종 수정 요청 payload:", payload);
-
             await updateJobPosting(jpno, payload);
-
-            openModal("구인공고를 수정", () =>
-                navigate("/jobposting/list")
-            ); // ✅ 모달 사용
+            openModal("구인공고가 수정되었습니다.", () => navigate("/jobposting/list"));
         } catch (err) {
             console.error("[ERROR] 수정 실패 상세:", err.response?.data || err);
             openModal(`수정 실패: ${err.response?.data?.error || err.message}`);
         }
     };
 
-    // 삭제 처리
-    const handleDelete = async () => {
-        openModal("정말 삭제", async () => {
-            try {
-                await deleteJobPosting(jpno, eno);
-                openModal("구인공고가 삭제되었습니다!", () =>
-                    navigate("/jobposting/list")
-                );
-            } catch (err) {
-                console.error("구인공고 삭제 실패:", err);
-                openModal("삭제 중 오류가 발생했습니다.");
-            }
-        });
+    const handleFileSelect = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length > 5) {
+            setFileError("최대 5개까지 업로드 가능합니다.");
+            setSelectedFiles(files.slice(0, 5));
+        } else {
+            setSelectedFiles(files);
+        }
+    };
+
+    const handleRemoveImage = (index) => {
+        setImages(images.filter((_, i) => i !== index));
     };
 
     if (loading) return <div>Loading...</div>;
@@ -176,12 +182,10 @@ const JobPostingEditPage = () => {
         <div className="p-6">
             <h2 className="text-2xl font-bold text-center mb-4">구인공고 수정</h2>
             <form onSubmit={handleUpdate} className="space-y-6">
-                {/* 모집 조건 입력 컴포넌트 */}
-                <JobPostingRegisterComponent data={baseInfo} onChange={handleBaseInfoChange} />
-                <hr className="border-gray-300" />
-                {/* 근무지 정보 입력 컴포넌트 */}
+                <JobPostingRegisterComponent data={baseInfo} onChange={handleBaseInfoChange}/>
+                <hr className="border-gray-300"/>
                 <div className="space-y-4">
-                    <JobPostingPlaceComponent data={placeInfo} onChange={handlePlaceInfoChange} />
+                    <JobPostingPlaceComponent data={placeInfo} onChange={handlePlaceInfoChange}/>
                     <div className="text-center">
                         <button
                             type="button"
@@ -193,12 +197,49 @@ const JobPostingEditPage = () => {
                     </div>
                     {showAddressSearch && (
                         <div className="mt-4">
-                            <AddressSearchComponent onComplete={handleAddressComplete} />
+                            <AddressSearchComponent onComplete={handleAddressComplete}/>
                         </div>
                     )}
                 </div>
-                <hr className="border-gray-300" />
-                {/* 제출 및 삭제 버튼 */}
+                <hr className="border-gray-300"/>
+                <div>
+                    <h3 className="text-lg font-semibold mb-2">공고 이미지 업로드</h3>
+                    <p className="text-sm text-gray-500 mb-2">공고에 표시될 이미지를 업로드하세요. (최대 5개)</p>
+                    {/* ✅ 기존 이미지 표시 */}
+                    <div className="grid grid-cols-5 gap-2 mb-4">
+                        {images.map((filename, index) => (
+                            <div key={index} className="relative">
+                                <img
+                                    src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${filename}`}
+                                    alt={`이미지 ${index + 1}`}
+                                    className="w-full h-24 object-cover rounded"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => handleRemoveImage(index)}
+                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <input
+                        type="file"
+                        multiple
+                        onChange={handleFileSelect}
+                        className="block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-blue-50 file:text-blue-700
+                          hover:file:bg-blue-100"
+                    />
+                    {selectedFiles.length > 0 && (
+                        <p className="mt-2 text-sm text-green-600">{selectedFiles.length}개 파일 선택됨</p>
+                    )}
+                </div>
+
                 <div className="flex justify-center space-x-4">
                     <button
                         type="submit"
@@ -216,7 +257,6 @@ const JobPostingEditPage = () => {
                 </div>
             </form>
 
-            {/* 모달 컴포넌트 */}
             {showModal && (
                 <CommonModal
                     isOpen={showModal}

@@ -28,6 +28,7 @@ function ApplicantReadComponent() {
             </div>
 
             {/* 지원자 정보 */}
+
             <div className="bg-white shadow-md rounded-lg w-full p-6 border mt-4">
                 <h2 className="text-2xl font-bold text-blue-500 text-center">지원자 정보</h2>
                 <div className="grid grid-cols-2 gap-4 mt-4">
