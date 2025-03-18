@@ -28,6 +28,12 @@ export const formatDate = (dateString) => {
     });
 };
 
+// 텍스트 길이 제한 함수
+const truncateText = (text, maxLength = 20) => {
+    if (!text) return "-"; // 값이 없으면 "-" 반환
+    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+};
+
 const getFormattedArray = (value) => {
     if (Array.isArray(value)) {
         return value.join(", ");
@@ -65,7 +71,7 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
                 result = result?.[key] || null;
                 if (!result) break;
             }
-            return result || "-";
+            return truncateText(result || "-"); // ✅ 텍스트 길이 제한 적용
         }
 
         // 기존 렌더링 로직 유지
@@ -86,7 +92,8 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
         if (col.endsWith("List")) {
             return getFormattedArray(value);
         }
-        return value || "-";
+
+        return truncateText(value || "-"); // ✅ 기본적으로 텍스트 길이 제한 적용
     };
 
     useEffect(() => {
@@ -116,10 +123,12 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
                         >
                             {column.map((col, index) => (
                                 <div key={col} className="flex justify-between py-2">
-                                    <span className="font-semibold text-blue-500">
+                                    <span className="font-semibold text-blue-500 w-1/3">
                                         {tableHeader[index]}
                                     </span>
-                                    <span>{renderCell(col, item[col], item)}</span>
+                                    <span className="w-2/3 text-right truncate">
+                                        {renderCell(col, item[col], item)}
+                                    </span>
                                 </div>
                             ))}
 

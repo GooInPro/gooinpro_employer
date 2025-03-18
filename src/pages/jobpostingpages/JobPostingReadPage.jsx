@@ -10,6 +10,16 @@ const JobPostingReadPage = () => {
     const [loading, setLoading] = useState(true);
     const [jobPosting, setJobPosting] = useState(null);
 
+    // 근무 요일 변환 함수
+    const DAYS_OF_WEEK = ["월", "화", "수", "목", "금", "토", "일"];
+    const convertWorkDays = (binaryString) => {
+        return binaryString
+            .split("")
+            .map((char, index) => (char === "1" ? DAYS_OF_WEEK[index] : null))
+            .filter((day) => day !== null)
+            .join(", ");
+    };
+
     useEffect(() => {
         if (!jpno || !loggedInEno) {
             console.error("필수 파라미터 누락:", { jpno, loggedInEno });
@@ -42,7 +52,7 @@ const JobPostingReadPage = () => {
                     {jobPosting.jpifilenames?.map((filename, index) => (
                         <img
                             key={index}
-                            src={`http://localhost/jobPosting/${filename}`}
+                            src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${filename}`} // ✅ 환경 변수 사용
                             alt={`공고 이미지 ${index + 1}`}
                             className="w-full h-32 object-cover rounded-lg border"
                         />
@@ -70,7 +80,7 @@ const JobPostingReadPage = () => {
                 </div>
                 <div>
                     <h3 className="font-semibold">근무 요일</h3>
-                    <p>{jobPosting.jpworkDays}</p>
+                    <p>{convertWorkDays(jobPosting.jpworkDays)}</p>
                 </div>
                 <div>
                     <h3 className="font-semibold">근무 기간</h3>
