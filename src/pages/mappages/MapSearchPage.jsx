@@ -1,13 +1,11 @@
 import { Container as MapDiv, NaverMap, Marker } from 'react-naver-maps';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import employerStore from '../../stores/employerStore';
 import { getAllWorkplaces, geocodeAddress } from '../../api/mapapi/mapapi';
 import { listJobPostings } from '../../api/jobpostingapi/jobpostingapi';
 import JobPostingTableComponent from "../../components/jobpostingcomponents/JobPostingTableComponent.jsx";
 
 const MapSearchPage = () => {
-    const navigate = useNavigate();
     const { eno } = employerStore();
     const [workplaceCenter, setWorkplaceCenter] = useState(null);
     const [myWorkplaceInfo, setMyWorkplaceInfo] = useState([]);

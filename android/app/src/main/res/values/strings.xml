@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">GooInPro_Employer</string>
-    <string name="title_activity_main">GooInPro_Employer</string>
-    <string name="package_name">org.gooinpro.gooinproemployer</string>
-    <string name="custom_url_scheme">org.gooinpro.gooinproemployer</string>
-</resources>
