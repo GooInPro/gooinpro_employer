@@ -1,10 +1,10 @@
-import JobPostingRegisterComponent from "../../components/jobpostingcomponents/JobPostingRegisterComponent.jsx";
+import JobPostingReadComponent from "../../components/jobpostingcomponents/JobPostingReadComponent.jsx";
 
 
 function JobPostingReadPage() {
     return (
         <div>
-            <JobPostingRegisterComponent />
+            <JobPostingReadComponent />
         </div>
     );
 }
