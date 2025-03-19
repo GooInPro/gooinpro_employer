@@ -1,5 +1,4 @@
-import JobPostingListComponent from "../../components/jobpostingcomponents/JobPostingListComponent.js";
-
+import JobPostingListComponent from "../../components/jobpostingcomponents/JobPostingListComponent.jsx";
 
 function JobPostingListPage() {
     return (

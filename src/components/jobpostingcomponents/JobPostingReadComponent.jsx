@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getJobPosting } from "../../api/jobpostingapi/jobpostingapi";
+import { getJobPosting } from "../../api/jobpostingapi/jobpostingapi.js";
 import employerStore from "../../stores/employerStore";
 
 function JobPostingReadComponent() {

@@ -4,7 +4,7 @@ import employerStore from "../../stores/employerStore.js";
 import {deleteJobPosting, getJobPosting, updateJobPosting} from "../../api/jobpostingapi/jobpostingapi.js";
 import {geocodeAddress} from "../../api/mapapi/mapapi.js";
 import {uploadFile} from "../../util/fileUploadUtil.js";
-import JobPostingRegisterComponent from "./JobPostingRegisterComponent.jsx";
+import JobPostingProfileComponent from "./JobPostingProfileComponent.jsx";
 import JobPostingPlaceComponent from "./JobPostingPlaceComponent.jsx";
 import AddressSearchComponent from "../../common/AddressSearchComponent.jsx";
 import CommonModal from "../../common/CommonModal.jsx";
@@ -189,7 +189,7 @@ function JobPostingEditComponent() {
         <div className="p-6">
             <h2 className="text-2xl font-bold text-center mb-4">구인공고 수정</h2>
             <form onSubmit={handleUpdate} className="space-y-6">
-                <JobPostingRegisterComponent data={baseInfo} onChange={handleBaseInfoChange}/>
+                <JobPostingProfileComponent data={baseInfo} onChange={handleBaseInfoChange}/>
                 <hr className="border-gray-300"/>
                 <div className="space-y-4">
                     <JobPostingPlaceComponent data={placeInfo} onChange={handlePlaceInfoChange}/>
