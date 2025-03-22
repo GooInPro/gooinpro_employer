@@ -8,7 +8,8 @@ let savedCookies = {
     eemail: null,
     ename: null,
     accessToken: null,
-    refreshToken: null
+    refreshToken: null,
+    fcmToken: null
 };
 
 try {
@@ -24,6 +25,7 @@ const employerStore = create((set, get) => ({
     ename: savedCookies.ename,
     accessToken: savedCookies.accessToken,
     refreshToken: savedCookies.refreshToken,
+    fcmToken: savedCookies.fcmToken,
 
     setEno: (eno) => {
         set({ eno });
@@ -59,6 +61,11 @@ const employerStore = create((set, get) => ({
         set({ accessToken: null, refreshToken: null });
         const state = get(); // 현재 상태를 가져옴
         cookies.set('employer', { ...state, accessToken: null, refreshToken: null }, { path: '/', expires: new Date(Date.now() + 3600 * 1000) });
+    },
+    setFcmToken: (token) => {
+        set({ fcmToken: token });
+        const state = get();
+        cookies.set('employer', { ...state, fcmToken: token }, { path: '/', expires: new Date(Date.now() + 3600 * 1000) });
     },
 }));
 
