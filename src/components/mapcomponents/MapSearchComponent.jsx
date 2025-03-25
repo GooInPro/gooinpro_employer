@@ -2,7 +2,7 @@ import { Container as MapDiv, NaverMap, Marker } from 'react-naver-maps';
 import { useState, useEffect } from 'react';
 import employerStore from '../../stores/employerStore';
 import { getAllWorkplaces, geocodeAddress } from '../../api/mapapi/mapapi';
-import { listJobPostings } from '../../api/jobpostingapi/jobpostingapi';
+import { listAllJobPostings  } from '../../api/jobpostingapi/jobpostingapi';
 import JobPostingTableComponent from "../../components/jobpostingcomponents/JobPostingTableComponent.jsx";
 
 function MapSearchComponent() {
@@ -15,7 +15,7 @@ function MapSearchComponent() {
 
     const getJobPostingList = async (page) => {
         try {
-            const response = await listJobPostings(eno);
+            const response = await listAllJobPostings (page);
             const data = response.data || [];
 
             // 페이지네이션 로직

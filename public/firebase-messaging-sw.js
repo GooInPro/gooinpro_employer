@@ -15,11 +15,44 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
+// 백그라운드 메시지 처리
 messaging.onBackgroundMessage(function(payload) {
-    const notificationTitle = '새로운 알림';
+    console.log('[firebase-messaging-sw.js] Received background message ', payload);
+
+    const notificationTitle = payload.notification?.title || '새로운 알림';
     const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.icon,
+        body: payload.notification?.body || '새로운 메시지가 도착했습니다.',
+        icon: payload.notification?.icon || '/logo.png'
     };
-    self.registration.showNotification(notificationTitle, notificationOptions);
+
+    return self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// 알림 클릭 이벤트 처리
+self.addEventListener('notificationclick', function(event) {
+    console.log('알림 클릭됨:', event);
+    event.notification.close();
+
+    // 클릭 시 특정 URL로 이동
+    const urlToOpen = new URL('/notifications', self.location.origin).href;
+
+    const promiseChain = clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true
+    })
+        .then((windowClients) => {
+            // 이미 열린 창이 있는지 확인
+            for (let i = 0; i < windowClients.length; i++) {
+                const client = windowClients[i];
+                if (client.url === urlToOpen && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            // 열린 창이 없으면 새 창 열기
+            if (clients.openWindow) {
+                return clients.openWindow(urlToOpen);
+            }
+        });
+
+    event.waitUntil(promiseChain);
 });

@@ -107,3 +107,15 @@ export const getPartTimerListWithPay = async (year, month, page) => {
 
     return res.data.data;
 }
+
+// 지원자 수락 로직
+export const acceptJobApplication = async (jpano, eno) => {
+    try {
+        const res = await axios.put(`${host}/applicant/accept/${jpano}`, { eno }, {
+            headers: { "Content-Type": "application/json" }
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};

@@ -50,3 +50,14 @@ export const listJobPostings = async (eno) => {
         throw error;
     }
 };
+
+export const listAllJobPostings = async (page = 1, size = 10) => {
+    try {
+        const res = await axios.get(`${host}/list/all`, {
+            params: { page, size }
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};

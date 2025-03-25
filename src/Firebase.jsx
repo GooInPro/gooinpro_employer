@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getToken } from "firebase/messaging";
+import { getToken, onMessage } from "firebase/messaging";
 import { messaging } from "./config/firebaseConfig";
 import { saveEmployerToken } from "./api/employerapi/employerAPI";
 import employerStore from "./stores/employerStore";
@@ -32,6 +32,22 @@ const Firebase = ({ eno }) => {
                     } else {
                         console.log("FCM 토큰이 변경되지 않았습니다. 서버 전송 생략.");
                     }
+
+                    // 포그라운드 메시지 처리 리스너 등록
+                    const unsubscribe = onMessage(messaging, (payload) => {
+                        console.log('포그라운드 메시지 수신:', payload);
+
+                        // 알림 표시 로직
+                        if (payload.notification) {
+                            new Notification(payload.notification.title, {
+                                body: payload.notification.body,
+                                icon: payload.notification.icon || '/logo.png'
+                            });
+                        }
+                    });
+
+                    // 컴포넌트 언마운트 시 리스너 제거를 위해 반환
+                    return () => unsubscribe();
                 } else {
                     console.log("알림 권한이 거부되었습니다.");
                 }
