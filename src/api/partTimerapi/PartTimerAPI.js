@@ -107,3 +107,10 @@ export const getPartTimerListWithPay = async (year, month, page) => {
 
     return res.data.data;
 }
+
+export const JobApplicationAceept = async (jpano, status) => {
+
+    const res = await axios.put(`${host}/applicant/accept?jpano=${jpano}&status=${status}`);
+
+    return res.data;
+}
