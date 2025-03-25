@@ -10,7 +10,7 @@ export const PartTimerTableHeader = [
 ]
 
 export const ApplicantTableColumn = [
-    "pno", "pifilename", "pname", "jpname", "jpahourlyRate"
+    "jpano", "pifilename", "pname", "jpname", "jpahourlyRate"
 ]
 
 export const ApplicantTableHeader = [

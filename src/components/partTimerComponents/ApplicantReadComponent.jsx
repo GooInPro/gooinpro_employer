@@ -1,13 +1,38 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { readApplicant, acceptJobApplication } from "../../api/partTimerapi/PartTimerAPI.js";
+import { JobApplicationAceept, readApplicant } from "../../api/partTimerapi/PartTimerAPI.js";
+import CommonModal from "../../common/CommonModal.jsx";
 
 function ApplicantReadComponent() {
+
     const { jpano } = useParams();
     const [data, setData] = useState({});
-    const [status, setStatus] = useState(null); // null, 'accepted', 'rejected'
-    const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState(""); // 모달 메시지
+    const [actionType, setActionType] = useState(""); // 수락/거절 여부
     const navigate = useNavigate();
+
+    const onClickAccept = () => {
+        setActionType("accept");
+        setModalMessage("지원자를 수락"); // 수락 메시지
+        setShowModal(true); // 모달 띄우기
+    }
+
+    const onClickDenied = () => {
+        setActionType("deny");
+        setModalMessage("지원자를 거절"); // 거절 메시지
+        setShowModal(true); // 모달 띄우기
+    }
+
+    const handleModalConfirm = () => {
+        JobApplicationAceept(jpano, actionType === "accept" ? 1 : 2);
+        setShowModal(false);
+        navigate(-1); // 이전 페이지로 이동
+    }
+
+    const handleModalCancel = () => {
+        setShowModal(false); // 모달 닫기
+    }
 
     useEffect(() => {
         readApplicant(jpano).then((res) => {
@@ -15,42 +40,6 @@ function ApplicantReadComponent() {
             console.log(res);
         });
     }, [jpano]);
-
-    const handleAccept = async () => {
-        try {
-            setLoading(true);
-            const eno = localStorage.getItem('eno'); // 고용주 ID를 로컬 스토리지에서 가져옴
-            await acceptJobApplication(jpano, eno);
-            setStatus('accepted');
-            console.log("지원이 성공적으로 수락되었습니다.");
-        } catch (error) {
-            console.error("지원 수락 실패:", error);
-            console.log("지원 수락 중 오류가 발생했습니다.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleReject = async () => {
-        // 실제 거절 API가 구현되면 여기에 추가
-        try {
-            setLoading(true);
-            // 더미 구현: 실제로는 API 호출이 필요
-            setTimeout(() => {
-                setStatus('rejected');
-                alert("지원이 거절되었습니다.");
-                setLoading(false);
-            }, 500);
-        } catch (error) {
-            console.error("지원 거절 실패:", error);
-            alert("지원 거절 중 오류가 발생했습니다.");
-            setLoading(false);
-        }
-    };
-
-    const goBack = () => {
-        navigate(-1); // 이전 페이지로 이동
-    };
 
     return (
         <div className="flex flex-col items-center p-4 max-w-md mx-auto">
@@ -92,46 +81,33 @@ function ApplicantReadComponent() {
                 </p>
             </div>
 
-            {/* 상태 메시지 */}
-            {status === 'accepted' && (
-                <div className="mt-6 p-3 bg-green-100 text-green-700 rounded-md w-full text-center font-bold">
-                    지원이 수락되었습니다. 파트타이머에게 알림이 전송되었습니다.
-                </div>
-            )}
-            {status === 'rejected' && (
-                <div className="mt-6 p-3 bg-red-100 text-red-700 rounded-md w-full text-center font-bold">
-                    지원이 거절되었습니다.
-                </div>
-            )}
-
-            {/* 버튼 그룹 */}
-            <div className="flex gap-4 mt-6 w-full">
+            {/* 수락, 거절 버튼 */}
+            <div className="flex justify-between w-full mt-6">
                 <button
-                    onClick={goBack}
-                    className="flex-1 bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition"
+                    onClick={onClickAccept}
+                    className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-200 w-full mr-2"
                 >
-                    목록으로
+                    수락
                 </button>
 
-                {!status && (
-                    <>
-                        <button
-                            onClick={handleReject}
-                            disabled={loading}
-                            className="flex-1 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition disabled:opacity-50"
-                        >
-                            {loading ? '처리 중...' : '거절하기'}
-                        </button>
-                        <button
-                            onClick={handleAccept}
-                            disabled={loading}
-                            className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition disabled:opacity-50"
-                        >
-                            {loading ? '처리 중...' : '수락하기'}
-                        </button>
-                    </>
-                )}
+                <button
+                    onClick={onClickDenied}
+                    className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-200 w-full"
+                >
+                    거절
+                </button>
             </div>
+
+            {/* 모달 */}
+            {showModal && (
+                <CommonModal
+                    isOpen={showModal}
+                    msg={modalMessage}
+                    fn={handleModalConfirm}
+                    closeModal={handleModalCancel}
+                    cancelFn={handleModalCancel}
+                />
+            )}
         </div>
     );
 }
