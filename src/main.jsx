@@ -10,6 +10,7 @@ import { registerSW } from 'virtual:pwa-register';
 // 서비스 워커를 등록하고 자동 업데이트 활성화
 registerSW({ immediate: true });
 
+
 createRoot(document.getElementById('root')).render(
 
     <RouterProvider router={mainRouter}></RouterProvider>

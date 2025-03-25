@@ -41,7 +41,7 @@ const getFormattedArray = (value) => {
     return value || "-";
 };
 
-function CommonTableComponent({ name, tableHeader, column, listFn, renderActions }) {
+function JobPostingTableComponent({ name, tableHeader, column, listFn, renderActions }) {
     const [data, setData] = useState(init);
     const [loading, setLoading] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -155,4 +155,4 @@ function CommonTableComponent({ name, tableHeader, column, listFn, renderActions
     );
 }
 
-export default CommonTableComponent;
+export default JobPostingTableComponent;
