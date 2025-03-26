@@ -171,7 +171,7 @@ function JobPostingRegisterComponent() {
             {showModal && (
                 <CommonModal
                     isOpen={showModal}
-                    msg="구인공고를 등록하시겠습니까?"
+                    msg="구인공고를 등록"
                     fn={processRegister}
                     closeModal={closeModal}
                     cancelFn={closeModal}
