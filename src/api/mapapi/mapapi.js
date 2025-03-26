@@ -1,7 +1,7 @@
 // src/api/mapapi/mapapi.js
 import axios from "axios";
 
-const host =`${import.meta.env.VITE_API_MAP_HOST}`
+const host =`${import.meta.env.VITE_API_HOST}/map`
 
 
 // 로그인 사용자의 근무지 정보 가져오기
