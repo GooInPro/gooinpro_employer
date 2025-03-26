@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getJobPosting } from "../../api/jobpostingapi/jobpostingapi.js";
 import employerStore from "../../stores/employerStore";
+import { FaFileAlt, FaRegStickyNote, FaUserFriends, FaMoneyBillWave, FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 
 function JobPostingReadComponent() {
     const { jpno } = useParams();
@@ -43,62 +44,95 @@ function JobPostingReadComponent() {
     if (loading) return <div>Loading...</div>;
     if (!jobPosting) return <div>구인공고를 찾을 수 없습니다.</div>;
 
+    const imageUrl =
+        jobPosting.jpifilenames && jobPosting.jpifilenames.length > 0
+            ? `${import.meta.env.VITE_IMAGE_BASE_URL}/${jobPosting.jpifilenames[0]}`
+            : "/defaultImage.jpg"
+
     return (
         <div className="p-6">
+            <h2 className="text-2xl font-bold text-center mb-4">구인공고 상세</h2>
 
-            <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-4">공고 이미지</h3>
-                <div className="grid grid-cols-3 gap-4">
-                    {jobPosting.jpifilenames?.map((filename, index) => (
-                        <img
-                            key={index}
-                            src={`${import.meta.env.VITE_IMAGE_BASE_URL}/${filename}`} // ✅ 환경 변수 사용
-                            alt={`공고 이미지 ${index + 1}`}
-                            className="w-full h-32 object-cover rounded-lg border"
-                        />
-                    ))}
+            <div className="mb-6 flex flex-col items-center w-full">
+                <div className="w-full max-w-3xl">
+                    <img
+                        src={imageUrl}
+                        alt="구인 공고 관련 이미지를 넣어주세요"
+                        className="w-full aspect-[16/9] object-cover rounded-lg"
+                        // className="w-full h-full object-cover"
+                    />
+                    {!imageUrl && <span>업체에서 등록한 이미지가 없습니다</span>}
                 </div>
             </div>
 
-            <h2 className="text-2xl font-bold text-center mb-4">구인공고 상세</h2>
             <div className="space-y-4">
-                <div>
-                    <h3 className="font-semibold">공고명</h3>
+                {/* 공고명 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaFileAlt className="text-blue-500"/>
+                        <h3 className="font-semibold">공고명</h3>
+                    </div>
                     <p>{jobPosting.jpname}</p>
                 </div>
-                <div>
-                    <h3 className="font-semibold">공고 내용</h3>
+
+                {/* 공고 내용 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaRegStickyNote className="text-blue-500"/>
+                        <h3 className="font-semibold">공고 내용</h3>
+                    </div>
                     <p>{jobPosting.jpcontent}</p>
                 </div>
-                <div>
-                    <h3 className="font-semibold">모집 인원</h3>
+
+                {/* 모집 인원 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaUserFriends className="text-blue-500"/>
+                        <h3 className="font-semibold">모집 인원</h3>
+                    </div>
                     <p>{jobPosting.jpvacancies}명</p>
                 </div>
-                <div>
-                    <h3 className="font-semibold">시급</h3>
+
+                {/* 시급 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaMoneyBillWave className="text-blue-500"/>
+                        <h3 className="font-semibold">시급</h3>
+                    </div>
                     <p>{jobPosting.jphourlyRate}원</p>
                 </div>
-                <div>
-                    <h3 className="font-semibold">근무 요일</h3>
+
+                {/* 근무 요일 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaCalendarAlt className="text-blue-500"/>
+                        <h3 className="font-semibold">근무 요일</h3>
+                    </div>
                     <p>{convertWorkDays(jobPosting.jpworkDays)}</p>
                 </div>
-                <div>
-                    <h3 className="font-semibold">근무 기간</h3>
-                    <p>{jobPosting.jpminDuration}개월
-                        ~ {jobPosting.jpmaxDuration ? `${jobPosting.jpmaxDuration}개월` : '무기한'}</p>
-                </div>
-                <div>
-                    <h3 className="font-semibold">근무 시간</h3>
+
+                {/* 근무 시간 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaClock className="text-blue-500"/>
+                        <h3 className="font-semibold">근무 시간</h3>
+                    </div>
                     <p>
-                        {jobPosting.jpworkStartTime?.substring(0, 5) ?? '00:00'} ~
-                        {jobPosting.jpworkEndTime?.substring(0, 5) ?? '00:00'}
+                        {jobPosting.jpworkStartTime?.substring(0, 5) ?? "00:00"} ~{" "}
+                        {jobPosting.jpworkEndTime?.substring(0, 5) ?? "00:00"}
                     </p>
                 </div>
-                <div>
-                    <h3 className="font-semibold">근무지 주소</h3>
-                    <p>{jobPosting.wroadAddress} {jobPosting.wdetailAddress}</p>
+
+                {/* 근무지 주소 */}
+                <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                        <FaMapMarkerAlt className="text-blue-500"/>
+                        <h3 className="font-semibold">근무지 주소</h3>
+                    </div>
+                    <p>{jobPosting.WorkPlace?.wroadAddress} {jobPosting.WorkPlace?.wdetailAddress}</p>
                 </div>
             </div>
+
             <div className="mt-6 text-center space-x-4">
                 <button
                     onClick={() => navigate("/jobposting/list")}

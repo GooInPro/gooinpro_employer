@@ -162,7 +162,7 @@ function JobPostingEditComponent() {
 
             console.log("[DEBUG] 최종 수정 페이로드:", payload);
             await updateJobPosting(jpno, payload);
-            openModal("구인공고가 수정되었습니다.", () => navigate("/jobposting/list"));
+            openModal("구인공고를 수정", () => navigate("/jobposting/list"));
         } catch (err) {
             console.error("[ERROR] 수정 실패 상세:", err.response?.data || err);
             openModal(`수정 실패: ${err.response?.data?.error || err.message}`);
