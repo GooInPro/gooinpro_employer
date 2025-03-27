@@ -33,7 +33,7 @@ function ApplicantReadComponent() {
     const handleModalCancel = () => {
         setShowModal(false); // 모달 닫기
     }
-
+    
     useEffect(() => {
         readApplicant(jpano).then((res) => {
             setData(res);
@@ -47,9 +47,10 @@ function ApplicantReadComponent() {
             <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-300">
                 <img
                     src={data.pifilename ? `https://esnack24admin.store/profile/${data.pifilename}` : "/public/default_image.png"}
-                    alt="프로필 사진"
+                    // alt="프로필 사진"
                     className="w-full h-full object-cover"
                 />
+
             </div>
 
             {/* 지원자 정보 */}
