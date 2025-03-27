@@ -59,7 +59,7 @@ function CommonTableComponent({ name, tableHeader, column, listFn }) {
         if (col === "pifilename") {
             return (
                 <img
-                    src={value ? `http://localhost/profile/${value}` : "/public/default_image.png"}
+                    src={value ? `https://esnack24admin.store/profile/${value}` : "/public/default_image.png"}
                     alt="프로필 사진"
                     className="w-10 h-10 rounded-full object-cover"
                 />
