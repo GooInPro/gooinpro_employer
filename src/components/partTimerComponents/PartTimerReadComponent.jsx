@@ -53,7 +53,7 @@ function PartTimerReadComponent() {
                 <div className="flex flex-col items-center mb-6">
                     <div className="w-32 h-32 rounded-full overflow-hidden border">
                         <img
-                            src={data.partTimer.pifilename ? `http://localhost/profile/${data.partTimer.pifilename}` : "/public/default_image.png"}
+                            src={data.partTimer.pifilename ? `https://esnack24admin.store/profile/${data.partTimer.pifilename}` : "/public/default_image.png"}
                             alt="프로필 사진"
                             className="w-full h-full object-cover"
                         />
