@@ -46,7 +46,7 @@ function ApplicantReadComponent() {
             {/* 프로필 이미지 */}
             <div className="w-24 h-24 rounded-full overflow-hidden border border-gray-300">
                 <img
-                    src={data.pifilename ? `http://localhost/profile/${data.pifilename}` : "/public/default_image.png"}
+                    src={data.pifilename ? `https://esnack24admin.store/profile/${data.pifilename}` : "/public/default_image.png"}
                     alt="프로필 사진"
                     className="w-full h-full object-cover"
                 />
